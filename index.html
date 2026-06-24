@@ -325,11 +325,10 @@
 
     <div class="slider-container" id="slider">
         
-        <!-- Slide 1: Cover -->
         <div class="slide" style="align-items: center; text-align: center; justify-content: center;">
             <div class="lang-ja">
                 <h1 style="border: none; margin-bottom: 1rem;">IT 情報セキュリティ<br>職務経歴書</h1>
-                <p style="font-size: 1.5rem; color: var(--accent-color);">情報セキュリティスペシャリスト | 経験9年4ヶ月</p>
+                <p style="font-size: 1.5rem; color: var(--accent-color);">情報セキュリティスペシャリスト | <span id="calc-duration-ja">経験計算中...</span></p>
                 <div style="margin-top: 3rem; color: #94a3b8;">
                     <p>1. 自己紹介・経歴概要</p>
                     <p>2. 主要プロジェクト履歴</p>
@@ -339,7 +338,7 @@
             </div>
             <div class="lang-ko">
                 <h1 style="border: none; margin-bottom: 1rem;">IT 정보보안<br>포트폴리오</h1>
-                <p style="font-size: 1.5rem; color: var(--accent-color);">정보보안 전문가 | 경력 9년 4개월</p>
+                <p style="font-size: 1.5rem; color: var(--accent-color);">정보보안 전문가 | <span id="calc-duration-ko">경력 계산중...</span></p>
                 <div style="margin-top: 3rem; color: #94a3b8;">
                     <p>1. 자기소개 및 경력 요약</p>
                     <p>2. 주요 프로젝트 이력</p>
@@ -349,15 +348,14 @@
             </div>
         </div>
 
-        <!-- Slide 2: Intro & History -->
         <div class="slide">
             <div class="lang-ja">
                 <h2>自己紹介・経歴概要</h2>
-                <p style="font-size: 1.2rem; margin-bottom: 1rem;">情報セキュリティ分野にて約9年以上の実務経験。セキュリティ監視、エンジニアリング、運用保守まで幅広いレイヤーでの業務遂行能力を保有しています。</p>
+                <p style="font-size: 1.2rem; margin-bottom: 1rem;">情報セキュリティ分野にて<span id="calc-years-ja">約9年以上</span>の実務経験。セキュリティ監視、エンジニアリング、運用保守まで幅広いレイヤーでの業務遂行能力を保有しています。</p>
             </div>
             <div class="lang-ko">
                 <h2>자기소개 및 경력 요약</h2>
-                <p style="font-size: 1.2rem; margin-bottom: 1rem;">정보보안 분야 약 9년 이상의 실무 경험. 보안 관제, 엔지니어링, 인시던트 대응 및 시스템 구축 운영까지 폭넓은 보안 실무 역량을 보유하고 있습니다.</p>
+                <p style="font-size: 1.2rem; margin-bottom: 1rem;">정보보안 분야 <span id="calc-years-ko">약 9년 이상</span>의 실무 경험. 보안 관제, 엔지니어링, 인시던트 대응 및 시스템 구축 운영까지 폭넓은 보안 실무 역량을 보유하고 있습니다.</p>
             </div>
             
             <div class="grid-2">
@@ -447,7 +445,6 @@
             </div>
         </div>
 
-        <!-- Slide 3: Best Practice 1 (Cloud Asset) -->
         <div class="slide">
             <div class="lang-ja">
                 <h2>Best Practice 1: クラウド資産管理システムの自社構築</h2>
@@ -521,7 +518,6 @@
             </div>
         </div>
 
-        <!-- Slide 4: Best Practice 2 (Office Security) -->
         <div class="slide">
             <div class="lang-ja">
                 <h2>Best Practice 2: オフィスセキュリティ点検システムの開発</h2>
@@ -585,7 +581,6 @@
             </div>
         </div>
 
-        <!-- Slide 5: Best Practice 3 (XDR) -->
         <div class="slide">
             <div class="lang-ja">
                 <h2>Best Practice 3: 統合セキュリティプラットフォーム(XDR)構築・高度化</h2>
@@ -657,7 +652,6 @@
             </div>
         </div>
 
-        <!-- Slide 6: Best Practice 4 (SQUID) -->
         <div class="slide">
             <div class="lang-ja">
                 <h2>Best Practice 4: 網分離環境におけるコラボレーションツール接続統制</h2>
@@ -729,7 +723,6 @@
             </div>
         </div>
 
-        <!-- Slide 7: Best Practice 5 (Webshell) -->
         <div class="slide">
             <div class="lang-ja">
                 <h2>Best Practice 5: Webシェル攻撃による侵害インシデント(IR)対応</h2>
@@ -811,7 +804,6 @@
             </div>
         </div>
 
-        <!-- Slide 8: Outro -->
         <div class="slide" style="align-items: center; text-align: center; justify-content: center;">
             <div class="lang-ja">
                 <h1 style="border: none; margin-bottom: 2rem;">お忙しい中、<br>お読みいただきありがとうございました</h1>
@@ -833,7 +825,38 @@
     </div>
 
     <script>
-        // Language Toggle Logic
+        // --- 경력 기간 자동 계산 로직 ---
+        function calculateCareerDuration() {
+            const startYear = 2017;
+            const startMonth = 2; // 2월
+            
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            const currentMonth = now.getMonth() + 1; // getMonth()는 0부터 시작하므로 +1
+            
+            let years = currentYear - startYear;
+            let months = currentMonth - startMonth;
+            
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+            
+            const calcDurationJa = document.getElementById('calc-duration-ja');
+            const calcDurationKo = document.getElementById('calc-duration-ko');
+            const calcYearsJa = document.getElementById('calc-years-ja');
+            const calcYearsKo = document.getElementById('calc-years-ko');
+            
+            if (calcDurationJa) calcDurationJa.textContent = `経験${years}年${months}ヶ月`;
+            if (calcDurationKo) calcDurationKo.textContent = `경력 ${years}년 ${months}개월`;
+            if (calcYearsJa) calcYearsJa.textContent = `約${years}年以上`;
+            if (calcYearsKo) calcYearsKo.textContent = `약 ${years}년 이상`;
+        }
+        
+        // 페이지 로드 시 즉시 계산
+        calculateCareerDuration();
+
+        // --- Language Toggle Logic ---
         const langToggleBtn = document.getElementById('langToggle');
         langToggleBtn.addEventListener('click', () => {
             if (document.body.classList.contains('lang-ja')) {
@@ -847,7 +870,7 @@
             }
         });
 
-        // Slider Logic
+        // --- Slider Logic ---
         const slider = document.getElementById('slider');
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
@@ -895,7 +918,7 @@
             }
         });
 
-        // Mobile Swipe Support
+        // --- Mobile Swipe Support ---
         let touchstartX = 0;
         let touchendX = 0;
         
