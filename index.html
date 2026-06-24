@@ -53,6 +53,74 @@
             transform: translateY(-2px);
         }
 
+        /* --- Login Overlay Styles --- */
+        #login-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--bg-color);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease-in-out;
+        }
+        
+        .login-box {
+            background-color: var(--card-bg);
+            padding: 3rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            max-width: 90%;
+            width: 400px;
+        }
+
+        .login-box h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            justify-content: center;
+        }
+        .login-box h2::before { content: none; } /* 다이아몬드 아이콘 제거 */
+
+        .login-box input {
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            background-color: rgba(15, 23, 42, 0.8);
+            color: var(--text-color);
+            font-size: 1.1rem;
+            outline: none;
+        }
+        
+        .login-box input:focus {
+            border-color: var(--accent-color);
+        }
+
+        .login-box button {
+            width: 100%;
+            margin-bottom: 1.5rem;
+        }
+
+        .login-hint {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+
+        .error-msg {
+            color: #ef4444;
+            font-size: 0.9rem;
+            margin-top: -0.5rem;
+            margin-bottom: 1rem;
+            display: none;
+            font-weight: bold;
+        }
+
+        /* --- Slider Styles --- */
         .slider-container {
             width: 100%;
             height: 100%;
@@ -288,7 +356,7 @@
             .history-card {
                 max-height: none;
                 overflow-y: visible;
-                padding-right: 1.5rem !important; /* 모바일 우측 여백 깨짐 수정 */
+                padding-right: 1.5rem !important;
             }
 
             table, thead, tbody, th, td, tr {
@@ -319,6 +387,21 @@
     </style>
 </head>
 <body class="lang-ja">
+    
+    <div id="login-overlay">
+        <div class="login-box">
+            <h2>Portfolio Access</h2>
+            <p style="margin-bottom: 1.5rem; font-size: 0.95rem;">ポートフォリオを閲覧するにはパスワードを入力してください。</p>
+            <input type="password" id="pwdInput" placeholder="Password">
+            <p id="errorMsg" class="error-msg">ACCESS DENIED</p>
+            <button class="nav-btn" id="loginBtn">Enter</button>
+            <div class="login-hint">
+                💡 <strong>Hint:</strong> 世界で最も使われているパスワード<br>
+                (세계에서 가장 많이 쓰이는 비밀번호)
+            </div>
+        </div>
+    </div>
+
     <div class="progress-bar" id="progressBar"></div>
     
     <button id="langToggle">한국어 전환</button>
@@ -448,7 +531,7 @@
         <div class="slide">
             <div class="lang-ja">
                 <h2>Best Practice 1: クラウド資産管理システムの自社構築</h2>
-                <p>PythonとAWS APIを活用し、グループ内のマルチアカウント環境におけるクラウドリソースとリスクの統合管理を実現しました。（N社）</p>
+                <p>PythonとAWS APIを活用し、グループ内のマルチアカウント環境におけるクラウドリソースとリスクの統合管理を実現しました。</p>
                 <div class="card">
                     <table>
                         <tr>
@@ -483,7 +566,7 @@
             </div>
             <div class="lang-ko">
                 <h2>Best Practice 1: 클라우드 자산 관리 시스템 자사 구축</h2>
-                <p>Python 및 AWS API를 활용하여, 그룹 내 멀티 계정 환경의 클라우드 리소스 및 리스크를 통합 관리하는 시스템을 구축했습니다. (N사)</p>
+                <p>Python 및 AWS API를 활용하여, 그룹 내 멀티 계정 환경의 클라우드 리소스 및 리스크를 통합 관리하는 시스템을 구축했습니다. </p>
                 <div class="card">
                     <table>
                         <tr>
@@ -521,7 +604,7 @@
         <div class="slide">
             <div class="lang-ja">
                 <h2>Best Practice 2: オフィスセキュリティ点検システムの開発</h2>
-                <p>物理セキュリティ（クリアデスク等）点検のプロセスをシステム化・自動化し、手作業によるレポート作成の手間を大幅に削減しました。（N社）</p>
+                <p>物理セキュリティ（クリアデスク等）点検のプロセスをシステム化・自動化し、手作業によるレポート作成の手間を大幅に削減しました。</p>
                 <div class="card">
                     <table>
                         <tr>
@@ -551,7 +634,7 @@
             </div>
             <div class="lang-ko">
                 <h2>Best Practice 2: 오피스 보안 점검 시스템 자체 개발</h2>
-                <p>물리적 보안(클리어 데스크 등) 점검 프로세스를 전면 시스템화하여, 수작업에 의존하던 점검 및 레포트 작성 시간을 혁신적으로 단축했습니다. (N사)</p>
+                <p>물리적 보안(클리어 데스크 등) 점검 프로세스를 전면 시스템화하여, 수작업에 의존하던 점검 및 레포트 작성 시간을 혁신적으로 단축했습니다.</p>
                 <div class="card">
                     <table>
                         <tr>
@@ -825,14 +908,39 @@
     </div>
 
     <script>
-        // --- 경력 기간 자동 계산 로직 ---
+        // --- Login Authentication Logic ---
+        const loginOverlay = document.getElementById('login-overlay');
+        const pwdInput = document.getElementById('pwdInput');
+        const loginBtn = document.getElementById('loginBtn');
+        const errorMsg = document.getElementById('errorMsg');
+
+        function checkPassword() {
+            if (pwdInput.value === 'password') {
+                loginOverlay.style.opacity = '0';
+                setTimeout(() => {
+                    loginOverlay.style.display = 'none';
+                }, 500);
+            } else {
+                errorMsg.style.display = 'block';
+                pwdInput.value = '';
+                pwdInput.focus();
+            }
+        }
+
+        loginBtn.addEventListener('click', checkPassword);
+        pwdInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') checkPassword();
+        });
+
+
+        // --- Career Duration Calculation ---
         function calculateCareerDuration() {
             const startYear = 2017;
             const startMonth = 2; // 2월
             
             const now = new Date();
             const currentYear = now.getFullYear();
-            const currentMonth = now.getMonth() + 1; // getMonth()는 0부터 시작하므로 +1
+            const currentMonth = now.getMonth() + 1; 
             
             let years = currentYear - startYear;
             let months = currentMonth - startMonth;
@@ -853,7 +961,6 @@
             if (calcYearsKo) calcYearsKo.textContent = `약 ${years}년 이상`;
         }
         
-        // 페이지 로드 시 즉시 계산
         calculateCareerDuration();
 
         // --- Language Toggle Logic ---
@@ -909,6 +1016,9 @@
         prevBtn.addEventListener('click', prevSlide);
 
         document.addEventListener('keydown', (e) => {
+            // 패스워드 입력창에 포커스가 있을 때는 방향키로 슬라이드가 넘어가지 않도록 방어
+            if(document.activeElement === pwdInput) return;
+
             if (e.key === 'ArrowRight' || e.key === ' ') {
                 e.preventDefault();
                 nextSlide();
