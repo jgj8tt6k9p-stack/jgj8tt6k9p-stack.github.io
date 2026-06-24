@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Portfolio | 情報セキュリティエンジニア / 정보보안 엔지니어</title>
     <style>
         :root {
@@ -63,11 +63,12 @@
         .slide {
             min-width: 100vw;
             height: 100vh;
-            padding: 4rem 10vw;
+            padding: 4rem 10vw 6rem 10vw;
             display: flex;
             flex-direction: column;
             justify-content: center;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .slide::-webkit-scrollbar { display: none; }
@@ -137,7 +138,7 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 3rem;
-            margin-top: 2rem;
+            margin-top: 1rem;
         }
 
         .card {
@@ -147,6 +148,12 @@
             padding: 2rem;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
             margin-top: 1.5rem;
+        }
+
+        .history-card {
+            overflow-y: auto; 
+            max-height: 55vh; 
+            padding-right: 1rem;
         }
 
         .timeline-item {
@@ -235,37 +242,110 @@
             color: #bae6fd;
             font-weight: bold;
         }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 4rem 1.5rem 6rem 1.5rem;
+                justify-content: flex-start;
+            }
+
+            h1 { font-size: 2.2rem; line-height: 1.2; }
+            h2 { font-size: 1.6rem; }
+            h3 { font-size: 1.3rem; }
+            p, li { font-size: 1rem; }
+
+            #langToggle {
+                top: 1rem;
+                right: 1rem;
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .controls {
+                bottom: 1rem;
+                right: 1rem;
+                left: 1rem;
+                justify-content: space-between;
+            }
+
+            button.nav-btn {
+                padding: 0.8rem 1rem;
+                font-size: 1rem;
+                flex: 1;
+                margin: 0 0.5rem;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .card {
+                padding: 1.5rem;
+            }
+
+            .history-card {
+                max-height: none;
+                overflow-y: visible;
+                padding-right: 0;
+            }
+
+            table, thead, tbody, th, td, tr {
+                display: block;
+                width: 100%;
+            }
+
+            tr {
+                border: 1px solid var(--border-color);
+                border-radius: 8px;
+                margin-bottom: 1rem;
+                background-color: rgba(30, 41, 59, 0.3);
+                overflow: hidden;
+            }
+
+            th {
+                border: none;
+                border-bottom: 1px dashed var(--border-color);
+                width: 100%;
+                padding: 1rem;
+            }
+
+            td {
+                border: none;
+                padding: 1rem;
+            }
+        }
     </style>
 </head>
 <body class="lang-ja">
     <div class="progress-bar" id="progressBar"></div>
     
-    <!-- Language Toggle Button -->
     <button id="langToggle">한국어 전환</button>
 
     <div class="slider-container" id="slider">
         
         <!-- Slide 1: Cover -->
-        <div class="slide" style="align-items: center; text-align: center;">
+        <div class="slide" style="align-items: center; text-align: center; justify-content: center;">
             <div class="lang-ja">
-                <h1 style="border: none; font-size: 4rem; margin-bottom: 1rem;">IT 情報セキュリティ 職務経歴書</h1>
-                <p style="font-size: 1.8rem; color: var(--accent-color);">情報セキュリティスペシャリスト | 経験8年+</p>
+                <h1 style="border: none; margin-bottom: 1rem;">IT 情報セキュリティ<br>職務経歴書</h1>
+                <p style="font-size: 1.5rem; color: var(--accent-color);">情報セキュリティスペシャリスト | 経験8年+</p>
                 <div style="margin-top: 3rem; color: #94a3b8;">
                     <p>1. 自己紹介・経歴概要</p>
                     <p>2. 主要プロジェクト履歴</p>
                     <p>3. Best Practice (5件)</p>
                 </div>
-                <p style="margin-top: 5rem; font-style: italic;">※ キーボードの [→] または [Space] で次のスライドへ</p>
+                <p style="margin-top: 4rem; font-style: italic; font-size: 0.9rem;">※ 画面スワイプ、または下のボタンで移動</p>
             </div>
             <div class="lang-ko">
-                <h1 style="border: none; font-size: 4rem; margin-bottom: 1rem;">IT 정보보안 포트폴리오</h1>
-                <p style="font-size: 1.8rem; color: var(--accent-color);">정보보안 전문가 | 경력 8년+</p>
+                <h1 style="border: none; margin-bottom: 1rem;">IT 정보보안<br>포트폴리오</h1>
+                <p style="font-size: 1.5rem; color: var(--accent-color);">정보보안 전문가 | 경력 8년+</p>
                 <div style="margin-top: 3rem; color: #94a3b8;">
                     <p>1. 자기소개 및 경력 요약</p>
                     <p>2. 주요 프로젝트 이력</p>
                     <p>3. Best Practice (5건)</p>
                 </div>
-                <p style="margin-top: 5rem; font-style: italic;">※ 키보드의 [→] 또는 [Space] 로 다음 슬라이드로 이동합니다.</p>
+                <p style="margin-top: 4rem; font-style: italic; font-size: 0.9rem;">※ 화면을 스와이프하거나 하단 버튼으로 이동하세요.</p>
             </div>
         </div>
 
@@ -273,11 +353,11 @@
         <div class="slide">
             <div class="lang-ja">
                 <h2>自己紹介・経歴概要</h2>
-                <p style="font-size: 1.3rem; margin-bottom: 2rem;">情報セキュリティ分野にて約8年以上の実務経験。セキュリティ監視、エンジニアリング、運用保守まで幅広いレイヤーでの業務遂行能力を保有しています。</p>
+                <p style="font-size: 1.2rem; margin-bottom: 1rem;">情報セキュリティ分野にて約8年以上の実務経験。セキュリティ監視、エンジニアリング、運用保守まで幅広いレイヤーでの業務遂行能力を保有しています。</p>
             </div>
             <div class="lang-ko">
                 <h2>자기소개 및 경력 요약</h2>
-                <p style="font-size: 1.3rem; margin-bottom: 2rem;">정보보안 분야 약 8년 이상의 실무 경험. 보안 관제, 엔지니어링, 인시던트 대응 및 시스템 구축 운영까지 폭넓은 보안 실무 역량을 보유하고 있습니다.</p>
+                <p style="font-size: 1.2rem; margin-bottom: 1rem;">정보보안 분야 약 8년 이상의 실무 경험. 보안 관제, 엔지니어링, 인시던트 대응 및 시스템 구축 운영까지 폭넓은 보안 실무 역량을 보유하고 있습니다.</p>
             </div>
             
             <div class="grid-2">
@@ -304,13 +384,13 @@
                     </div>
                 </div>
                 
-                <div class="card" style="overflow-y: auto; max-height: 55vh; padding-right: 1rem; margin-top: 0;">
+                <div class="card history-card" style="margin-top: 0;">
                     <div class="lang-ja">
                         <h3>■ 職歴</h3>
                         <h4 class="history-section">【日本での経歴】</h4>
                         <div class="timeline-item">
                             <span class="timeline-date">2024.12 - 現在</span>
-                            <strong>N社（ゲーム、ウェブトゥーン等ITサービス）</strong>
+                            <strong>N社（大手IT企業）</strong>
                             <p style="font-size: 1rem; margin-top: 0.5rem;">
                                 ・セキュリティソリューションの運用<br>
                                 ・インシデント（攻撃イベント）分析および対応<br>
@@ -320,18 +400,18 @@
                         <h4 class="history-section" style="margin-top: 2rem;">【韓国での経歴】</h4>
                         <div class="timeline-item">
                             <span class="timeline-date">2021.11 - 2024.10</span>
-                            <strong>(株) A社（システム構築・運用等ITサービス）</strong>
+                            <strong>A社（大手グループIT系企業）</strong>
                             <p style="font-size: 1rem;">セキュリティシステム構築および運営</p>
                         </div>
                         <div class="timeline-item">
                             <span class="timeline-date">2019.08 - 2021.11</span>
-                            <strong>(株) M社（セキュリティソリューション販売会社）</strong>
+                            <strong>M社（セキュリティ専門企業）</strong>
                             <p style="font-size: 1rem;">WAF, SSL等L7セキュリティ構築</p>
                         </div>
                         <div class="timeline-item" style="margin-bottom: 0;">
                             <span class="timeline-date">2017.02 - 2019.08</span>
-                            <strong>(株) C社（セキュリティ監視サービス）</strong>
-                            <p style="font-size: 1rem;">SK Shieldus 統合監視センター常駐</p>
+                            <strong>C社（セキュリティ運用企業）</strong>
+                            <p style="font-size: 1rem;">大手S社 統合セキュリティ監視センター常駐</p>
                         </div>
                     </div>
                     <div class="lang-ko">
@@ -339,7 +419,7 @@
                         <h4 class="history-section">【일본 경력】</h4>
                         <div class="timeline-item">
                             <span class="timeline-date">2024.12 - 현재</span>
-                            <strong>N사 (게임, 웹툰 등 IT 서비스)</strong>
+                            <strong>N사（대형 IT기업）</strong>
                             <p style="font-size: 1rem; margin-top: 0.5rem;">
                                 ・보안 솔루션 운영<br>
                                 ・인시던트(공격 이벤트) 분석 및 대응 (XDR, IPS 등)<br>
@@ -349,17 +429,17 @@
                         <h4 class="history-section" style="margin-top: 2rem;">【한국 경력】</h4>
                         <div class="timeline-item">
                             <span class="timeline-date">2021.11 - 2024.10</span>
-                            <strong>(주) A사 (시스템 구축・운영 등 IT서비스)</strong>
+                            <strong>A사（대기업 그룹 IT SI/SM）</strong>
                             <p style="font-size: 1rem;">보안 시스템 구축 및 운영, 기술적 관리 업무</p>
                         </div>
                         <div class="timeline-item">
                             <span class="timeline-date">2019.08 - 2021.11</span>
-                            <strong>(주) M사 (보안솔루션 판매)</strong>
+                            <strong>M사（보안 솔루션 전문 기업）</strong>
                             <p style="font-size: 1rem;">웹방화벽, SSL암복호화 보안 솔루션 구축</p>
                         </div>
                         <div class="timeline-item" style="margin-bottom: 0;">
                             <span class="timeline-date">2017.02 - 2019.08</span>
-                            <strong>(주) C사 (보안 관제 서비스)</strong>
+                            <strong>C사（보안 관제 전문 기업）</strong>
                             <p style="font-size: 1rem;">S사 통합보안관제센터 상주, 위협 대응</p>
                         </div>
                     </div>
@@ -371,7 +451,7 @@
         <div class="slide">
             <div class="lang-ja">
                 <h2>Best Practice 1: クラウド資産管理システムの自社構築</h2>
-                <p>PythonとAWS APIを活用し、グループ内のマルチアカウント環境におけるクラウドリソースとリスクの統合管理を実現しました。（NHN JAPAN）</p>
+                <p>PythonとAWS APIを活用し、グループ内のマルチアカウント環境におけるクラウドリソースとリスクの統合管理を実現しました。（N社）</p>
                 <div class="card">
                     <table>
                         <tr>
@@ -406,7 +486,7 @@
             </div>
             <div class="lang-ko">
                 <h2>Best Practice 1: 클라우드 자산 관리 시스템 자사 구축</h2>
-                <p>Python 및 AWS API를 활용하여, 그룹 내 멀티 계정 환경의 클라우드 리소스 및 리스크를 통합 관리하는 시스템을 구축했습니다. (NHN JAPAN)</p>
+                <p>Python 및 AWS API를 활용하여, 그룹 내 멀티 계정 환경의 클라우드 리소스 및 리스크를 통합 관리하는 시스템을 구축했습니다. (N사)</p>
                 <div class="card">
                     <table>
                         <tr>
@@ -445,12 +525,12 @@
         <div class="slide">
             <div class="lang-ja">
                 <h2>Best Practice 2: オフィスセキュリティ点検システムの開発</h2>
-                <p>物理セキュリティ（クリアデスク等）点検のプロセスをシステム化・自動化し、手作業によるレポート作成の手間を大幅に削減しました。（NHN JAPAN）</p>
+                <p>物理セキュリティ（クリアデスク等）点検のプロセスをシステム化・自動化し、手作業によるレポート作成の手間を大幅に削減しました。（N社）</p>
                 <div class="card">
                     <table>
                         <tr>
                             <th>課題・背景</th>
-                            <td>オフィスでのPCや機密文書の放置を点検する際、従来は全座席を撮影（4枚程度）し、手動で全画像をダウンロードしてファイル名を座席番号に変更し、手作業でレポートを作成するという非効率的なプロセスが存在しました。</td>
+                            <td>オフィスでのPCや機密文書の放置を点検する際、従来は全座席を撮影し、手動で全画像をダウンロードしてファイル名を座席番号に変更し、レポートを作成するという非効率的なプロセスが存在しました。</td>
                         </tr>
                         <tr>
                             <th>主な取り組み</th>
@@ -468,14 +548,14 @@
                         </tr>
                         <tr>
                             <th>成果と意義</th>
-                            <td>従来は2フロアの点検に2時間（1フロアあたり60分）要していましたが、本システムの導入により9フロアを3時間（1フロアあたり20分）で点検可能になりました。これにより<span class="highlight-text">点検作業時間を約67%削減し、業務効率を300%向上</span>させるという圧倒的な成果を達成しました。また、手作業によるヒューマンエラーも完全に排除しました。</td>
+                            <td>従来は2フロアの点検に2時間要していましたが、本システムの導入により9フロアを3時間で点検可能になりました。これにより<span class="highlight-text">点検作業時間を約67%削減し、業務効率を300%向上</span>させるという圧倒的な成果を達成しました。</td>
                         </tr>
                     </table>
                 </div>
             </div>
             <div class="lang-ko">
                 <h2>Best Practice 2: 오피스 보안 점검 시스템 자체 개발</h2>
-                <p>물리적 보안(클리어 데스크 등) 점검 프로세스를 전면 시스템화하여, 수작업에 의존하던 점검 및 레포트 작성 시간을 혁신적으로 단축했습니다. (NHN JAPAN)</p>
+                <p>물리적 보안(클리어 데스크 등) 점검 프로세스를 전면 시스템화하여, 수작업에 의존하던 점검 및 레포트 작성 시간을 혁신적으로 단축했습니다. (N사)</p>
                 <div class="card">
                     <table>
                         <tr>
@@ -498,7 +578,7 @@
                         </tr>
                         <tr>
                             <th>성과 및 의의</th>
-                            <td>기존 2개 층 점검에 2시간(층당 60분)이 소요되던 업무를 9개 층 점검에 3시간(층당 20분)으로 획기적으로 단축했습니다. 이는 <span class="highlight-text">소요 시간 67% 감소, 업무 효율성 300% (3배) 증가</span>에 해당하는 엄청난 성과이며, 수작업 시 발생하던 파일명 오류 등 휴먼 에러를 원천 차단했습니다.</td>
+                            <td>기존 2개 층 점검에 2시간이 소요되던 업무를 9개 층 점검에 3시간으로 획기적으로 단축했습니다. 이는 <span class="highlight-text">소요 시간 67% 감소, 업무 효율성 300% (3배) 증가</span>에 해당하는 엄청난 성과이며, 수작업 시 발생하던 파일명 오류 등 휴먼 에러를 원천 차단했습니다.</td>
                         </tr>
                     </table>
                 </div>
@@ -521,7 +601,7 @@
                             <td>
                                 <ul>
                                     <li>インターネット接続トラフィックをSSL可視化機器(SWG+SSLVA)でPlain-textに復号化。</li>
-                                    <li>復号化されたミラートラフィックをAPT NX(悪性トラフィック分析)やDLP(情報流出モニタリング)に並行して転送する高度なネットワーク設計を導入。</li>
+                                    <li>復号化されたミラートラフィックをAPT NXやDLPに並行して転送する高度なネットワーク設計を導入。</li>
                                 </ul>
                             </td>
                         </tr>
@@ -530,7 +610,7 @@
                             <td>
                                 <ul>
                                     <li>老朽化したセキュリティ機器(FW, IPS)のシームレスなリプレイスを遂行。</li>
-                                    <li>ネットワーク機器、エンドポイント(DRM, PMS, AV等)から発生するシステムログと検知イベントを統合収集し、XDRプラットフォームに連動させるパイプラインを構築。</li>
+                                    <li>ネットワーク機器、エンドポイントから発生するシステムログと検知イベントを統合収集し、XDRプラットフォームに連動させるパイプラインを構築。</li>
                                 </ul>
                             </td>
                         </tr>
@@ -555,7 +635,7 @@
                             <td>
                                 <ul>
                                     <li>사용자의 인터넷 접속 트래픽을 SSL 가시성 솔루션(SWG+SSLVA)을 거쳐 Plain-text로 복호화하도록 네트워크 구성.</li>
-                                    <li>복호화된 미러 트래픽을 APT NX(악성 트래픽 분석)와 DLP(정보 유출 모니터링)로 동시 전송하여 탐지율을 극대화하는 아키텍처 설계 및 구축.</li>
+                                    <li>복호화된 미러 트래픽을 APT NX와 DLP로 동시 전송하여 탐지율을 극대화하는 아키텍처 설계 및 구축.</li>
                                 </ul>
                             </td>
                         </tr>
@@ -564,7 +644,7 @@
                             <td>
                                 <ul>
                                     <li>노후화된 방화벽, IPS의 교체 및 정책 최적화 프로젝트 리딩.</li>
-                                    <li>네트워크 시스템, DB, 단말(DRM, NAC, PMS 등)에서 발생하는 방대한 이벤트 및 로그를 XDR 플랫폼으로 연동 및 파싱하는 데이터 파이프라인 구축.</li>
+                                    <li>네트워크 시스템, DB, 단말에서 발생하는 방대한 이벤트 및 로그를 XDR 플랫폼으로 연동 및 파싱하는 데이터 파이프라인 구축.</li>
                                 </ul>
                             </td>
                         </tr>
@@ -586,7 +666,7 @@
                     <table>
                         <tr>
                             <th>課題・背景</th>
-                            <td>主要職務者向けの網分離環境(インターネット遮断環境)において、業務上の必要性から特定グループウェアやコラボレーションツールへのアクセスを許可する必要がありました。しかし、個人の私的アカウントでのログインを防ぎ、情報流出リスクを遮断する技術的制御が求められていました。</td>
+                            <td>網分離環境において特定グループウェアへのアクセスを許可する必要がありましたが、個人の私的アカウントでのログインを防ぎ、情報流出リスクを遮断する技術的制御が求められていました。</td>
                         </tr>
                         <tr>
                             <th>技術的詳細</th>
@@ -602,13 +682,13 @@
                             <td>
                                 <ul>
                                     <li>網分離区間にプロキシサーバーをゼロから単独で構築(寄与度100%)。</li>
-                                    <li>既存プロキシルールのマイグレーション、SSL証明書(Trusted Root)検証機能の適用、WebSocket通信のバイパス処理など、複雑な通信要件を解決するためのテストとチューニングを実施。</li>
+                                    <li>既存ルールのマイグレーション、SSL証明書検証機能の適用、WebSocket通信のバイパス処理などを実施。</li>
                                 </ul>
                             </td>
                         </tr>
                         <tr>
                             <th>成果と意義</th>
-                            <td>特定の企業アカウントのみログインを許可し、個人アカウントを完全に統制する環境を<span class="highlight-text">当該ソリューションメーカー(ベンダー)初の事例として成功</span>させました。これにより、利便性を損なうことなく網分離環境からの情報流出の抜け穴を完全に塞ぐことに貢献しました。</td>
+                            <td>特定の企業アカウントのみログインを許可し、個人アカウントを完全に統制する環境を<span class="highlight-text">当該ソリューションメーカー初の事例として成功</span>させました。これにより利便性を損なうことなく網分離環境からの情報流出の抜け穴を完全に塞ぎました。</td>
                         </tr>
                     </table>
                 </div>
@@ -620,14 +700,14 @@
                     <table>
                         <tr>
                             <th>도입 배경</th>
-                            <td>인터넷이 차단된 주요 직무자의 망분리 환경에서 업무용 그룹웨어 및 협업도구의 통신은 허용해야 했으나, 직원이 개인 계정으로 접속하여 회사 기밀 자료를 유출하는 행위를 차단할 기술적 통제 방안이 필수적이었습니다.</td>
+                            <td>인터넷이 차단된 망분리 환경에서 업무용 협업도구의 통신은 허용해야 했으나, 직원이 개인 계정으로 접속하여 회사 기밀 자료를 유출하는 행위를 차단할 기술적 통제 방안이 필수적이었습니다.</td>
                         </tr>
                         <tr>
                             <th>기술적 상세</th>
                             <td>
                                 <ul>
                                     <li><strong>환경:</strong> Redhat Enterprise 8.9 / Squid Cache 4.15</li>
-                                    <li><strong>제어 로직:</strong> 목적지 URL과 기업 도메인을 식별할 수 있는 HTTP Header (AUTH 등)의 'AND 조건'을 프록시 룰셋(Rule Set)으로 정교하게 구현.</li>
+                                    <li><strong>제어 로직:</strong> 목적지 URL과 기업 도메인을 식별할 수 있는 HTTP Header (AUTH 등)의 'AND 조건'을 프록시 룰셋으로 정교하게 구현.</li>
                                 </ul>
                             </td>
                         </tr>
@@ -636,13 +716,13 @@
                             <td>
                                 <ul>
                                     <li>망분리 구간 내 프록시 서버 단독 신규 구축 (프로젝트 기여도 100%).</li>
-                                    <li>SSL 인증서 검증(Trusted Root) 적용 및 WebSocket 기능 오류 해결을 위한 Bypass 설정, 중국 지점 등 특수 환경의 우회 방안 마련 및 테스트 수행.</li>
+                                    <li>SSL 인증서 검증(Trusted Root) 적용 및 WebSocket 기능 우회 방안 마련 및 테스트 수행.</li>
                                 </ul>
                             </td>
                         </tr>
                         <tr>
                             <th>성과 및 의의</th>
-                            <td>오픈소스를 활용하여 개인 계정 로그인을 통제하는 환경을 <span class="highlight-text">제조사(솔루션 벤더) 최초 사례로 성공적으로 구축</span>했습니다. 차세대 그룹웨어 도입 사업을 성공적으로 이끌었으며, 고도화된 기술적 통제를 통해 망분리 환경의 정보 유출 사고 위험을 근본적으로 제거했습니다.</td>
+                            <td>오픈소스를 활용하여 개인 계정 로그인을 통제하는 환경을 <span class="highlight-text">제조사(솔루션 벤더) 최초 사례로 성공적으로 구축</span>했습니다. 고도화된 기술적 통제를 통해 망분리 환경의 정보 유출 사고 위험을 근본적으로 제거했습니다.</td>
                         </tr>
                     </table>
                 </div>
@@ -661,8 +741,7 @@
                             <td>
                                 <ul>
                                     <li><strong>発生時期:</strong> 2022年3月〜4月 (分析対象: サーバー10台, PC2台)</li>
-                                    <li>SmartEditor 2.1.2およびAtlassian Confluenceの脆弱性を悪用され、Webシェル(4種)および悪性ファイル(7種)がアップロードされた。</li>
-                                    <li>Cobalt StrikeおよびWebスキャナーを通じたシステムアカウント奪取の試みを確認。</li>
+                                    <li>SmartEditor 2.1.2およびAtlassian Confluenceの脆弱性を悪用され、Webシェルおよび悪性ファイルがアップロードされた。</li>
                                 </ul>
                             </td>
                         </tr>
@@ -670,8 +749,8 @@
                             <th>対応プロセス 1<br>(検知・初期対応)</th>
                             <td>
                                 <ul>
-                                    <li><strong>検知:</strong> Host IPSモニタリング中、内部IPセグメントに向けた不審なWebスキャン行為（特異イベント）をいち早く検知。</li>
-                                    <li><strong>封じ込め:</strong> 被害の拡散を防ぐため、即座に感染が疑われるPCおよびサーバーのネットワークを物理的・論理的に隔離措置。</li>
+                                    <li><strong>検知:</strong> Host IPSモニタリング中、内部IPセグメントに向けた不審なWebスキャン行為をいち早く検知。</li>
+                                    <li><strong>封じ込め:</strong> 被害の拡散を防ぐため、即座に感染が疑われるPCおよびサーバーのネットワークを隔離措置。</li>
                                 </ul>
                             </td>
                         </tr>
@@ -679,14 +758,14 @@
                             <th>対応プロセス 2<br>(調査・復旧・強化)</th>
                             <td>
                                 <ul>
-                                    <li><strong>調査分析:</strong> 不審なプロセスおよびシステムログの独自調査を実施。同時に専門チームへフォレンジック分析を依頼し、トラフィック解析からC2サーバー(ロシア)との通信事実を特定。</li>
-                                    <li><strong>復旧・再発防止:</strong> 開発者のシステムアクセス統制ポリシーを根本から見直し、全システムのパスワード強制変更および認証強化を実施。</li>
+                                    <li><strong>調査分析:</strong> 不審なプロセス調査とフォレンジック分析を実施し、C2サーバー(ロシア)との通信事実を特定。</li>
+                                    <li><strong>復旧・再発防止:</strong> 開発者のシステムアクセス統制ポリシーを見直し、全システムのパスワード強制変更および認証強化を実施。</li>
                                 </ul>
                             </td>
                         </tr>
                         <tr>
                             <th>成果と意義</th>
-                            <td>巧妙なラテラルムーブメント攻撃を初期段階で遮断し、<span class="highlight-text">顧客データ等の致命的な情報流出を未然に防ぐ</span>ことに成功しました。この事案を契機に、社内のインシデント対応マニュアルをアップデートし、組織のレジリエンスを向上させました。</td>
+                            <td>巧妙なラテラルムーブメント攻撃を初期段階で遮断し、<span class="highlight-text">顧客データ等の致命的な情報流出を未然に防ぐ</span>ことに成功しました。社内のインシデント対応マニュアルをアップデートし組織のレジリエンスを向上させました。</td>
                         </tr>
                     </table>
                 </div>
@@ -701,8 +780,7 @@
                             <td>
                                 <ul>
                                     <li><strong>대응 기간:</strong> 2022년 3월 ~ 4월 (분석 대상: 서버 10대, 개인PC 2대)</li>
-                                    <li>SmartEditor 2.1.2 업로드 취약점 및 Atlassian Confluence 취약점을 악용하여 악성 웹쉘 4종 및 악성 파일 7종이 업로드됨.</li>
-                                    <li>Cobalt Strike 등을 활용한 시스템 계정 탈취 및 내부 측면 이동 공격 시도.</li>
+                                    <li>SmartEditor 및 Atlassian Confluence 취약점을 악용하여 악성 웹쉘 4종 및 악성 파일 7종이 업로드됨.</li>
                                 </ul>
                             </td>
                         </tr>
@@ -711,7 +789,7 @@
                             <td>
                                 <ul>
                                     <li><strong>탐지:</strong> Host IPS 모니터링 중 내부 대역 IP로 향하는 웹 스캐닝 행위 등 비정상적인 특이 이벤트를 최초 발견.</li>
-                                    <li><strong>격리:</strong> 감염이 의심되는 PC 및 주요 서버의 네트워크를 즉각적으로 차단 및 격리 조치하여 피해 확산(라테럴 무브먼트) 차단.</li>
+                                    <li><strong>격리:</strong> 감염이 의심되는 PC 및 주요 서버의 네트워크를 즉각적으로 차단 및 격리 조치하여 피해 확산 차단.</li>
                                 </ul>
                             </td>
                         </tr>
@@ -719,14 +797,14 @@
                             <th>대응 프로세스 2<br>(분석, 복구 및 강화)</th>
                             <td>
                                 <ul>
-                                    <li><strong>조사 분석:</strong> 의심 프로세스 확인 및 시스템 로그 1차 조사 수행. 침해사고대응팀 선정 및 포렌식 분석을 의뢰하여 C2 서버(러시아)와의 악성 통신 유발 시스템 식별.</li>
-                                    <li><strong>복구 및 강화:</strong> 접근제어시스템 정책 개선을 통해 내부 개발자의 시스템 접근 통제를 대폭 강화. 전체 시스템 패스워드 일괄 변경 및 보안 정책 재정립.</li>
+                                    <li><strong>조사 분석:</strong> 포렌식 분석을 의뢰하여 C2 서버(러시아)와의 악성 통신 유발 시스템 식별.</li>
+                                    <li><strong>복구 및 강화:</strong> 내부 개발자의 시스템 접근 통제를 대폭 강화. 전체 시스템 패스워드 일괄 변경 및 보안 정책 재정립.</li>
                                 </ul>
                             </td>
                         </tr>
                         <tr>
                             <th>성과 및 의의</th>
-                            <td>치명적일 수 있었던 내부망 침투 공격을 조기에 차단하여 <span class="highlight-text">실질적인 데이터 유출 피해를 완벽히 방어</span>했습니다. 사고 대응의 전 과정을 경험하며 실전적인 침해 대응 역량을 증명하였으며, 사후 접근 체계 고도화를 이끌어냈습니다.</td>
+                            <td>치명적일 수 있었던 내부망 침투 공격을 조기에 차단하여 <span class="highlight-text">실질적인 데이터 유출 피해를 완벽히 방어</span>했습니다. 실전적인 침해 대응 역량을 증명하였으며, 사후 접근 체계 고도화를 이끌어냈습니다.</td>
                         </tr>
                     </table>
                 </div>
@@ -734,16 +812,16 @@
         </div>
 
         <!-- Slide 8: Outro -->
-        <div class="slide" style="align-items: center; text-align: center;">
+        <div class="slide" style="align-items: center; text-align: center; justify-content: center;">
             <div class="lang-ja">
                 <h1 style="border: none; margin-bottom: 2rem;">ご清聴ありがとうございました</h1>
-                <p style="font-size: 1.8rem; font-style: italic; color: #94a3b8; margin-bottom: 3rem;">"人生は挑戦し続けること。挑戦を止めれば成長も止まる"</p>
-                <p style="font-size: 1.3rem;">挑戦を恐れず、常に発展を志向するエンジニアとして貢献いたします。</p>
+                <p style="font-size: 1.5rem; font-style: italic; color: #94a3b8; margin-bottom: 3rem;">"人生は挑戦し続けること。<br>挑戦を止めれば成長も止まる"</p>
+                <p style="font-size: 1.2rem;">挑戦を恐れず、常に発展を志向するエンジニアとして貢献いたします。</p>
             </div>
             <div class="lang-ko">
                 <h1 style="border: none; margin-bottom: 2rem;">경청해 주셔서 감사합니다</h1>
-                <p style="font-size: 1.8rem; font-style: italic; color: #94a3b8; margin-bottom: 3rem;">"인생은 계속해서 도전하는 것이다. 도전을 멈추면 성장도 멈춘다"</p>
-                <p style="font-size: 1.3rem;">도전을 두려워하지 않고 항상 발전을 지향하는 보안 전문가가 되겠습니다.</p>
+                <p style="font-size: 1.5rem; font-style: italic; color: #94a3b8; margin-bottom: 3rem;">"인생은 계속해서 도전하는 것이다.<br>도전을 멈추면 성장도 멈춘다"</p>
+                <p style="font-size: 1.2rem;">도전을 두려워하지 않고 항상 발전을 지향하는 보안 전문가가 되겠습니다.</p>
             </div>
         </div>
 
@@ -784,10 +862,10 @@
             progressBar.style.width = `${((currentSlide + 1) / totalSlides) * 100}%`;
             
             prevBtn.style.opacity = currentSlide === 0 ? '0.5' : '1';
-            prevBtn.style.cursor = currentSlide === 0 ? 'default' : 'pointer';
+            prevBtn.style.pointerEvents = currentSlide === 0 ? 'none' : 'auto';
             
             nextBtn.style.opacity = currentSlide === totalSlides - 1 ? '0.5' : '1';
-            nextBtn.style.cursor = currentSlide === totalSlides - 1 ? 'default' : 'pointer';
+            nextBtn.style.pointerEvents = currentSlide === totalSlides - 1 ? 'none' : 'auto';
         }
 
         function nextSlide() {
@@ -816,6 +894,25 @@
                 prevSlide();
             }
         });
+
+        // Mobile Swipe Support
+        let touchstartX = 0;
+        let touchendX = 0;
+        
+        slider.addEventListener('touchstart', e => {
+            touchstartX = e.changedTouches[0].screenX;
+        });
+
+        slider.addEventListener('touchend', e => {
+            touchendX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const threshold = 50;
+            if (touchendX < touchstartX - threshold) nextSlide();
+            if (touchendX > touchstartX + threshold) prevSlide();
+        }
 
         // Initialize
         updateSlider();
