@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>일본어 단어장</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="landscape-warning">
+        📱<br>세로 화면으로<br>돌려주세요.
+    </div>
+
+    <div class="container">
+        <h1>일본어 단어장</h1>
+        
+        <div class="mode-controls">
+            <button id="btn-seq" class="active">순서대로</button>
+            <button id="btn-rand">랜덤으로</button>
+        </div>
+
+        <div class="flashcard" id="card-container">
+            <div class="card" id="card">
+                <div class="card-front">
+                    <div id="word-kanji">로딩중...</div>
+                </div>
+                <div class="card-back">
+                    <div id="word-yomigana" class="yomigana"></div>
+                    <div id="word-meaning" class="meaning"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-controls">
+            <button id="btn-prev">이전</button>
+            <button id="btn-next">다음</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
