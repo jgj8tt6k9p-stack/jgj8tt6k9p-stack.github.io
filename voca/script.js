@@ -35,7 +35,7 @@ async function loadWords() {
 }
 
 /* ============================
-   단어장 로직 (日本語 UI)
+   단어장 로직
 ============================ */
 function updateCard() {
     if (words.length === 0) return;
@@ -205,32 +205,33 @@ function showQuizResult() {
 
 document.getElementById('btn-quiz-restart').addEventListener('click', startQuizSession);
 
-
 /* ============================
-   🌙 ダークモード トグル ロ직
+   🌙 テーマ切替 (텍스트 기반 및 기본 다크 모드)
 ============================ */
 const btnDarkMode = document.getElementById('btn-dark-mode');
 
 btnDarkMode.addEventListener('click', () => {
     document.body.classList.toggle('dark-mode');
     if (document.body.classList.contains('dark-mode')) {
-        btnDarkMode.textContent = '☀️';
+        btnDarkMode.textContent = '明るい'; // 누르면 밝아짐을 의미
         localStorage.setItem('theme', 'dark');
     } else {
-        btnDarkMode.textContent = '🌙';
+        btnDarkMode.textContent = 'ダーク'; // 누르면 어두워짐을 의미
         localStorage.setItem('theme', 'light');
     }
 });
 
-// 페이지 초기 로드 시 기존 테마 유저 설정 반영
 function applyTheme() {
     const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-        document.body.classList.add('dark-mode');
-        btnDarkMode.textContent = '☀️';
-    } else {
+    
+    // 명시적으로 라이트 모드를 선택했던 적이 있는 경우에만 라이트 모드 적용
+    if (savedTheme === 'light') {
         document.body.classList.remove('dark-mode');
-        btnDarkMode.textContent = '🌙';
+        btnDarkMode.textContent = 'ダーク';
+    } else {
+        // 처음 방문했거나(null) 다크 모드가 저장된 상태라면 -> 기본적으로 다크 모드 작동
+        document.body.classList.add('dark-mode');
+        btnDarkMode.textContent = '明るい';
     }
 }
 
