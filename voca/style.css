@@ -42,7 +42,7 @@ h1 { font-size: 22px; color: #333; margin: 0; transition: color 0.3s; }
 /* 右側コントロール（クイズ＋テーマ切替） */
 .header-controls {
     position: absolute; right: 0; 
-    display: flex; align-items: center; gap: 8px;
+    display: flex; align-items: left; gap: 8px;
 }
 
 /* テーマ切替ボタン（テキスト化に伴うデザイン修正） */
