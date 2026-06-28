@@ -2,6 +2,10 @@ let words = [];
 let currentIndex = 0;
 let isRandom = false;
 
+let quizWords = [];
+let quizCurrentIndex = 0;
+let quizCorrectCount = 0;
+
 // CSV 파일 불러오기
 async function loadWords() {
     try {
@@ -22,16 +26,16 @@ async function loadWords() {
         if(words.length > 0) {
             updateCard();
         } else {
-            document.getElementById('word-kanji').textContent = "단어가 없습니다.";
+            document.getElementById('word-kanji').textContent = "単語がありません。";
         }
     } catch (error) {
         console.error('단어장을 불러오는 데 실패했습니다.', error);
-        document.getElementById('word-kanji').textContent = "로드 에러";
+        document.getElementById('word-kanji').textContent = "エラー";
     }
 }
 
 /* ============================
-   단어장 (Flashcard) 로직
+   단어장 로직 (日本語 UI)
 ============================ */
 function updateCard() {
     if (words.length === 0) return;
@@ -92,60 +96,68 @@ document.getElementById('btn-quiz-toggle').addEventListener('click', (e) => {
     const wordbookView = document.getElementById('wordbook-view');
 
     if (quizView.style.display === 'none') {
-        // 퀴즈 모드로 전환
         if (words.length < 4) {
-            alert("퀴즈를 진행하려면 단어가 최소 4개 이상 필요합니다.");
+            alert("クイズを始めるには単語が少なくとも4個以上必要です。");
             return;
         }
         wordbookView.style.display = 'none';
         quizView.style.display = 'flex';
-        e.target.textContent = '단어장 보기';
+        e.target.textContent = '単語帳';
         e.target.style.backgroundColor = '#4CAF50';
-        generateQuiz();
+        startQuizSession();
     } else {
-        // 단어장 모드로 전환
         quizView.style.display = 'none';
         wordbookView.style.display = 'flex';
-        e.target.textContent = '퀴즈 보기';
+        e.target.textContent = 'クイズ';
         e.target.style.backgroundColor = '#ff9800';
         updateCard();
     }
 });
 
+function startQuizSession() {
+    quizCorrectCount = 0;
+    quizCurrentIndex = 0;
+    quizWords = [...words].sort(() => Math.random() - 0.5);
+    
+    document.getElementById('quiz-play-area').style.display = 'flex';
+    document.getElementById('quiz-result-area').style.display = 'none';
+    
+    generateQuiz();
+}
+
 function generateQuiz() {
+    if (quizCurrentIndex >= quizWords.length) {
+        showQuizResult();
+        return;
+    }
+
     const feedback = document.getElementById('quiz-feedback');
-    feedback.textContent = ""; // 피드백 초기화
+    feedback.textContent = ""; 
     
-    // 정답 단어 1개 무작위 선택
-    const correctIndex = Math.floor(Math.random() * words.length);
-    const correctWord = words[correctIndex];
-    
+    document.getElementById('quiz-progress').textContent = `${quizCurrentIndex + 1} / ${quizWords.length}`;
+
+    const correctWord = quizWords[quizCurrentIndex];
     document.getElementById('quiz-kanji').textContent = correctWord.kanji;
     
-    // 오답 3개 추가 (정답과 겹치지 않게)
     let options = [correctWord];
     while(options.length < 4) {
         const wrongIndex = Math.floor(Math.random() * words.length);
         const wrongWord = words[wrongIndex];
-        // 배열에 없는 단어만 추가
         if (!options.includes(wrongWord)) {
             options.push(wrongWord);
         }
     }
     
-    // 보기 순서 무작위 섞기
     options.sort(() => Math.random() - 0.5);
     
     const optionsContainer = document.getElementById('quiz-options');
-    optionsContainer.innerHTML = ''; // 기존 버튼 초기화
+    optionsContainer.innerHTML = ''; 
     
-    // 4개의 버튼 생성
     options.forEach(opt => {
         const btn = document.createElement('button');
         btn.className = 'quiz-option';
         btn.textContent = `${opt.yomigana} (${opt.meaning})`;
         
-        // 정답 여부 저장
         if (opt === correctWord) {
             btn.dataset.correct = "true";
         }
@@ -156,7 +168,6 @@ function generateQuiz() {
 }
 
 function checkAnswer(clickedBtn, container) {
-    // 한 번 클릭하면 모든 버튼 비활성화
     const allBtns = container.querySelectorAll('.quiz-option');
     allBtns.forEach(b => b.disabled = true);
     
@@ -165,14 +176,14 @@ function checkAnswer(clickedBtn, container) {
 
     if (isCorrect) {
         clickedBtn.classList.add('correct');
-        feedback.textContent = "⭕ 정답!";
+        feedback.textContent = "⭕ 正解！";
         feedback.style.color = "#4CAF50";
+        quizCorrectCount++;
     } else {
         clickedBtn.classList.add('wrong');
-        feedback.textContent = "❌ 오답!";
+        feedback.textContent = "❌ 不正解...";
         feedback.style.color = "#f44336";
         
-        // 오답을 골랐을 때 정답인 버튼을 초록색으로 표시해줌
         allBtns.forEach(b => {
             if (b.dataset.correct === "true") {
                 b.classList.add('correct');
@@ -180,9 +191,51 @@ function checkAnswer(clickedBtn, container) {
         });
     }
     
-    // 1.5초(1500ms) 뒤에 다음 퀴즈 자동 생성
+    quizCurrentIndex++;
     setTimeout(generateQuiz, 1500);
 }
 
+function showQuizResult() {
+    document.getElementById('quiz-play-area').style.display = 'none';
+    document.getElementById('quiz-result-area').style.display = 'flex';
+    
+    const scoreElement = document.getElementById('quiz-result-score');
+    scoreElement.textContent = `${quizCorrectCount} / ${quizWords.length}`;
+}
+
+document.getElementById('btn-quiz-restart').addEventListener('click', startQuizSession);
+
+
+/* ============================
+   🌙 ダークモード トグル ロ직
+============================ */
+const btnDarkMode = document.getElementById('btn-dark-mode');
+
+btnDarkMode.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+    if (document.body.classList.contains('dark-mode')) {
+        btnDarkMode.textContent = '☀️';
+        localStorage.setItem('theme', 'dark');
+    } else {
+        btnDarkMode.textContent = '🌙';
+        localStorage.setItem('theme', 'light');
+    }
+});
+
+// 페이지 초기 로드 시 기존 테마 유저 설정 반영
+function applyTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        btnDarkMode.textContent = '☀️';
+    } else {
+        document.body.classList.remove('dark-mode');
+        btnDarkMode.textContent = '🌙';
+    }
+}
+
 // 시작
-window.onload = loadWords;
+window.onload = () => {
+    applyTheme();
+    loadWords();
+};

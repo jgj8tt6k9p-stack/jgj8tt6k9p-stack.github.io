@@ -4,30 +4,21 @@
 }
 
 body {
-    font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif;
+    font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', 'Hiragino Kaku Gothic ProN', sans-serif;
     background-color: #f0f4f8;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    height: 100dvh; 
-    overflow: hidden; 
+    color: #333;
+    margin: 0; padding: 0;
+    display: flex; flex-direction: column;
+    height: 100dvh; overflow: hidden; 
+    transition: background-color 0.3s, color 0.3s;
 }
 
 #landscape-warning {
-    display: none;
-    position: fixed;
+    display: none; position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: #2c3e50;
-    color: white;
-    z-index: 9999;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-    line-height: 1.5;
+    background: #2c3e50; color: white; z-index: 9999;
+    flex-direction: column; justify-content: center; align-items: center;
+    text-align: center; font-size: 24px; font-weight: bold; line-height: 1.5;
 }
 
 @media screen and (orientation: landscape) {
@@ -36,91 +27,56 @@ body {
 }
 
 .container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    padding: 20px;
-    max-width: 500px;
-    margin: 0 auto;
-    width: 100%;
+    display: flex; flex-direction: column;
+    height: 100%; padding: 20px; max-width: 500px; margin: 0 auto; width: 100%;
 }
 
-/* 상단 헤더 영역 */
+/* ヘ더 영역 */
 .header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    margin-bottom: 20px;
+    display: flex; justify-content: center; align-items: center;
+    position: relative; margin-bottom: 20px;
 }
 
-h1 {
-    font-size: 22px;
-    color: #333;
-    margin: 0;
+h1 { font-size: 22px; color: #333; margin: 0; transition: color 0.3s; }
+
+/* 다크모드 버튼 */
+.btn-dark {
+    position: absolute; left: 0;
+    background: none; font-size: 22px; padding: 5px;
 }
 
+/* 퀴즈 전환 버튼 */
 .btn-toggle {
-    position: absolute;
-    right: 0;
-    padding: 6px 12px;
-    font-size: 14px;
-    background-color: #ff9800;
-    color: white;
-    border-radius: 20px;
-    font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: absolute; right: 0; padding: 6px 14px; font-size: 14px;
+    background-color: #ff9800; color: white; border-radius: 20px;
+    font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.view-section {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    width: 100%;
-}
+.view-section { display: flex; flex-direction: column; flex: 1; width: 100%; }
+button { border: none; cursor: pointer; font-family: inherit; transition: all 0.2s; }
 
-/* 공통 버튼 스타일 */
-button {
-    border: none;
-    cursor: pointer;
-    font-family: inherit;
-    transition: background-color 0.2s;
-}
-
-/* 단어장 모드 컨트롤 */
-.mode-controls {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-}
+.mode-controls { display: flex; gap: 10px; margin-bottom: 20px; }
 .mode-controls button {
     flex: 1; padding: 12px; font-size: 16px; font-weight: bold;
     border-radius: 8px; background-color: #e0e0e0; color: #555;
 }
-.mode-controls button.active {
-    background-color: #007bff; color: white;
-}
+.mode-controls button.active { background-color: #007bff; color: white; }
 
-/* 플래시카드 */
-.flashcard {
-    flex: 1; width: 100%; perspective: 1000px; cursor: pointer; margin-bottom: 20px;
-}
-.card {
-    width: 100%; height: 100%; position: relative; transition: transform 0.5s; transform-style: preserve-3d;
-}
+/* フラッシュカード */
+.flashcard { flex: 1; width: 100%; perspective: 1000px; cursor: pointer; margin-bottom: 20px; }
+.card { width: 100%; height: 100%; position: relative; transition: transform 0.5s; transform-style: preserve-3d; }
 .card.is-flipped { transform: rotateY(180deg); }
 .card-front, .card-back {
     width: 100%; height: 100%; position: absolute; backface-visibility: hidden;
     display: flex; flex-direction: column; justify-content: center; align-items: center;
     border-radius: 20px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); background-color: white;
-    padding: 20px; text-align: center; word-break: keep-all;
+    padding: 20px; text-align: center; word-break: keep-all; transition: background-color 0.3s, border-color 0.3s;
 }
 .card-front { font-size: 60px; font-weight: bold; color: #222; }
 .card-back { transform: rotateY(180deg); background-color: #fdfdfd; }
 .yomigana { font-size: 32px; color: #007bff; margin-bottom: 15px; font-weight: bold; }
 .meaning { font-size: 26px; color: #444; }
 
-/* 네비게이션 버튼 */
 .nav-controls { display: flex; gap: 15px; padding-bottom: 10px; }
 .nav-controls button {
     flex: 1; padding: 18px; font-size: 18px; font-weight: bold;
@@ -129,53 +85,80 @@ button {
 }
 .nav-controls button:active { background-color: #45a049; transform: translateY(2px); }
 
-/* ==== 퀴즈 화면 디자인 ==== */
-.quiz-question {
-    font-size: 55px;
-    font-weight: bold;
-    text-align: center;
-    color: #222;
-    margin: 30px 0;
-    flex: 0.5;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.quiz-options {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
+/* クイズ */
+#quiz-play-area { display: flex; flex-direction: column; flex: 1; width: 100%; }
+.quiz-progress { text-align: center; font-size: 16px; font-weight: bold; color: #777; margin-top: 5px; }
+.quiz-question { font-size: 55px; font-weight: bold; text-align: center; color: #222; margin: 20px 0; flex: 0.4; display: flex; align-items: center; justify-content: center; transition: color 0.3s;}
+.quiz-options { display: flex; flex-direction: column; gap: 12px; }
 .quiz-option {
-    padding: 18px;
-    font-size: 18px;
-    background-color: white;
-    border: 2px solid #007bff;
-    color: #333;
-    border-radius: 12px;
-    text-align: center;
-    font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    padding: 18px; font-size: 18px; background-color: white; border: 2px solid #007bff;
+    color: #333; border-radius: 12px; text-align: center; font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: background-color 0.2s, color 0.2s;
+}
+.quiz-option.correct { background-color: #4CAF50 !important; border-color: #4CAF50 !important; color: white !important; }
+.quiz-option.wrong { background-color: #f44336 !important; border-color: #f44336 !important; color: white !important; }
+.quiz-feedback { text-align: center; font-size: 22px; font-weight: bold; margin-top: 20px; min-height: 30px; }
+
+/* クイズ結果 */
+#quiz-result-area {
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    flex: 1; text-align: center; background-color: white; border-radius: 20px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1); padding: 30px; margin: 20px 0; transition: background-color 0.3s;
+}
+.result-icon { font-size: 70px; margin-bottom: 10px; }
+.result-title { font-size: 24px; font-weight: bold; color: #333; margin-bottom: 15px; transition: color 0.3s; }
+.result-score { font-size: 36px; font-weight: bold; color: #007bff; margin-bottom: 35px; }
+.btn-restart {
+    width: 100%; padding: 16px; font-size: 18px; font-weight: bold;
+    background-color: #007bff; color: white; border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-.quiz-option.correct {
-    background-color: #4CAF50 !important;
-    border-color: #4CAF50 !important;
-    color: white !important;
+
+/* ===================================================
+   ==== 🌙 ダークモード スタイル (푸른빛 도는 어두운 테마) ====
+   =================================================== */
+body.dark-mode {
+    background-color: #0b111e; /* 깊은 다크 블루 배경 */
+    color: #e2e8f0;
 }
 
-.quiz-option.wrong {
-    background-color: #f44336 !important;
-    border-color: #f44336 !important;
-    color: white !important;
+body.dark-mode h1, 
+body.dark-mode .quiz-question, 
+body.dark-mode .result-title {
+    color: #f1f5f9;
 }
 
-.quiz-feedback {
-    text-align: center;
-    font-size: 22px;
-    font-weight: bold;
-    margin-top: 25px;
-    min-height: 30px;
+/* 카드 다크모드 + 은은한 푸른 네온 광채 */
+body.dark-mode .card-front, 
+body.dark-mode .card-back,
+body.dark-mode #quiz-result-area {
+    background-color: #151f32;
+    border: 1px solid #1e2d4a;
+    box-shadow: 0 8px 32px rgba(0, 150, 255, 0.25); /* 푸른빛 글로우 */
 }
+
+body.dark-mode .card-front { color: #ffffff; }
+body.dark-mode .card-back { background-color: #151f32; }
+body.dark-mode .meaning { color: #cbd5e1; }
+
+/* 상단 선택 버튼 다크모드 */
+body.dark-mode .mode-controls button {
+    background-color: #1e293b;
+    color: #94a3b8;
+}
+body.dark-mode .mode-controls button.active {
+    background-color: #0084ff;
+    color: white;
+    box-shadow: 0 0 12px rgba(0, 132, 255, 0.6);
+}
+
+/* 퀴즈 객관식 선택지 다크모드 + 푸른 광채 테두리 */
+body.dark-mode .quiz-option {
+    background-color: #151f32;
+    border: 2px solid #0084ff;
+    color: #f1f5f9;
+    box-shadow: 0 0 10px rgba(0, 132, 255, 0.15);
+}
+
+body.dark-mode .quiz-progress { color: #64748b; }

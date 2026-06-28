@@ -1,35 +1,33 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>日本語単語勉強</title>
+    <title>日本語 単語帳 & クイズ</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- 가로 모드 방지 경고창 -->
     <div id="landscape-warning">
-        📱<br>画面を建て<br>にしてください。
+        📱<br>画面を縦向きに<br>してください。
     </div>
 
     <div class="container">
-        <!-- 상단 헤더 -->
         <div class="header">
-            <h1>日本語単語帳</h1>
+            <button id="btn-dark-mode" class="btn-dark">🌙</button>
+            <h1>日本語 単語帳</h1>
             <button id="btn-quiz-toggle" class="btn-toggle">クイズ</button>
         </div>
         
-        <!-- 단어장 화면 -->
         <div id="wordbook-view" class="view-section">
             <div class="mode-controls">
-                <button id="btn-seq" class="active">順番で</button>
-                <button id="btn-rand">ランダムで</button>
+                <button id="btn-seq" class="active">順番に</button>
+                <button id="btn-rand">ランダム</button>
             </div>
 
             <div class="flashcard" id="card-container">
                 <div class="card" id="card">
                     <div class="card-front">
-                        <div id="word-kanji">ローディング中</div>
+                        <div id="word-kanji">読み込み中...</div>
                     </div>
                     <div class="card-back">
                         <div id="word-yomigana" class="yomigana"></div>
@@ -44,13 +42,20 @@
             </div>
         </div>
 
-        <!-- 퀴즈 화면 (기본은 숨김) -->
         <div id="quiz-view" class="view-section" style="display: none;">
-            <div class="quiz-question" id="quiz-kanji">問題</div>
-            <div class="quiz-options" id="quiz-options">
-                <!-- 선택지가 자바스크립트를 통해 여기에 생성됩니다 -->
+            <div id="quiz-play-area">
+                <div class="quiz-progress" id="quiz-progress">0 / 0</div>
+                <div class="quiz-question" id="quiz-kanji">問題</div>
+                <div class="quiz-options" id="quiz-options"></div>
+                <div class="quiz-feedback" id="quiz-feedback"></div>
             </div>
-            <div class="quiz-feedback" id="quiz-feedback"></div>
+
+            <div id="quiz-result-area" style="display: none;">
+                <div class="result-icon">🏆</div>
+                <div class="result-title">クイズ完了！</div>
+                <div class="result-score" id="quiz-result-score">0 / 0</div>
+                <button id="btn-quiz-restart" class="btn-restart">もう一度挑戦</button>
+            </div>
         </div>
     </div>
 
