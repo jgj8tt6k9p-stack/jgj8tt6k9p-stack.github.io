@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>日本語単語勉強</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 가로 모드 방지 경고창 -->
+    <div id="landscape-warning">
+        📱<br>画面を建て<br>にしてください。
+    </div>
+
+    <div class="container">
+        <!-- 상단 헤더 -->
+        <div class="header">
+            <h1>日本語単語帳</h1>
+            <button id="btn-quiz-toggle" class="btn-toggle">クイズ</button>
+        </div>
+        
+        <!-- 단어장 화면 -->
+        <div id="wordbook-view" class="view-section">
+            <div class="mode-controls">
+                <button id="btn-seq" class="active">順番で</button>
+                <button id="btn-rand">ランダムで</button>
+            </div>
+
+            <div class="flashcard" id="card-container">
+                <div class="card" id="card">
+                    <div class="card-front">
+                        <div id="word-kanji">ローディング中</div>
+                    </div>
+                    <div class="card-back">
+                        <div id="word-yomigana" class="yomigana"></div>
+                        <div id="word-meaning" class="meaning"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nav-controls">
+                <button id="btn-prev">前へ</button>
+                <button id="btn-next">次へ</button>
+            </div>
+        </div>
+
+        <!-- 퀴즈 화면 (기본은 숨김) -->
+        <div id="quiz-view" class="view-section" style="display: none;">
+            <div class="quiz-question" id="quiz-kanji">問題</div>
+            <div class="quiz-options" id="quiz-options">
+                <!-- 선택지가 자바스크립트를 통해 여기에 생성됩니다 -->
+            </div>
+            <div class="quiz-feedback" id="quiz-feedback"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

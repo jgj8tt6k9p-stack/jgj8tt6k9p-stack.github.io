@@ -8,15 +8,14 @@ async function loadWords() {
         const response = await fetch('words.csv');
         const text = await response.text();
         
-        // 줄바꿈으로 나누고, 빈 줄 제외
         const lines = text.trim().split('\n').filter(line => line.length > 0);
         
         words = lines.map(line => {
             const [kanji, yomigana, meaning] = line.split(',');
             return {
-                kanji: kanji.trim(),
-                yomigana: yomigana.trim(),
-                meaning: meaning.trim()
+                kanji: kanji ? kanji.trim() : "",
+                yomigana: yomigana ? yomigana.trim() : "",
+                meaning: meaning ? meaning.trim() : ""
             };
         });
 
@@ -27,71 +26,163 @@ async function loadWords() {
         }
     } catch (error) {
         console.error('단어장을 불러오는 데 실패했습니다.', error);
-        document.getElementById('word-kanji').textContent = "CSV 파일 로드 에러";
+        document.getElementById('word-kanji').textContent = "로드 에러";
     }
 }
 
-// 화면에 단어 표시하기
+/* ============================
+   단어장 (Flashcard) 로직
+============================ */
 function updateCard() {
     if (words.length === 0) return;
-
     const currentWord = words[currentIndex];
     
     document.getElementById('word-kanji').textContent = currentWord.kanji;
     document.getElementById('word-yomigana').textContent = currentWord.yomigana;
     document.getElementById('word-meaning').textContent = currentWord.meaning;
 
-    // 카드가 뒤집혀있다면 다시 앞면으로 원복
     document.getElementById('card').classList.remove('is-flipped');
 }
 
-// 카드 클릭 시 뒤집기
 document.getElementById('card-container').addEventListener('click', () => {
     document.getElementById('card').classList.toggle('is-flipped');
 });
 
-// 다음 단어
 document.getElementById('btn-next').addEventListener('click', () => {
     if (isRandom) {
         let newIndex;
-        // 같은 단어가 연속으로 나오지 않도록 방지
-        do {
-            newIndex = Math.floor(Math.random() * words.length);
-        } while (newIndex === currentIndex && words.length > 1);
+        do { newIndex = Math.floor(Math.random() * words.length); } 
+        while (newIndex === currentIndex && words.length > 1);
         currentIndex = newIndex;
     } else {
-        currentIndex = (currentIndex + 1) % words.length; // 마지막 단어 다음은 첫 단어
+        currentIndex = (currentIndex + 1) % words.length; 
     }
     updateCard();
 });
 
-// 이전 단어
 document.getElementById('btn-prev').addEventListener('click', () => {
     if (isRandom) {
-        // 랜덤 모드일 때 이전 버튼도 랜덤으로 동작시킴
         currentIndex = Math.floor(Math.random() * words.length);
     } else {
-        currentIndex = (currentIndex - 1 + words.length) % words.length; // 첫 단어 이전은 마지막 단어
+        currentIndex = (currentIndex - 1 + words.length) % words.length; 
     }
     updateCard();
 });
 
-// 모드 변경: 순서대로
 document.getElementById('btn-seq').addEventListener('click', (e) => {
     isRandom = false;
     document.getElementById('btn-seq').classList.add('active');
     document.getElementById('btn-rand').classList.remove('active');
-    currentIndex = 0; // 순서 모드로 바꾸면 처음부터 시작
+    currentIndex = 0; 
     updateCard();
 });
 
-// 모드 변경: 랜덤으로
 document.getElementById('btn-rand').addEventListener('click', (e) => {
     isRandom = true;
     document.getElementById('btn-rand').classList.add('active');
     document.getElementById('btn-seq').classList.remove('active');
-    updateCard(); // 즉시 현재 위치에서 랜덤 모드 활성화 (다음 버튼 클릭시 랜덤 적용)
+    updateCard(); 
 });
 
-// 페이지 로드 시 단어장 실행
+/* ============================
+   화면 전환 및 퀴즈 로직
+============================ */
+document.getElementById('btn-quiz-toggle').addEventListener('click', (e) => {
+    const quizView = document.getElementById('quiz-view');
+    const wordbookView = document.getElementById('wordbook-view');
+
+    if (quizView.style.display === 'none') {
+        // 퀴즈 모드로 전환
+        if (words.length < 4) {
+            alert("퀴즈를 진행하려면 단어가 최소 4개 이상 필요합니다.");
+            return;
+        }
+        wordbookView.style.display = 'none';
+        quizView.style.display = 'flex';
+        e.target.textContent = '단어장 보기';
+        e.target.style.backgroundColor = '#4CAF50';
+        generateQuiz();
+    } else {
+        // 단어장 모드로 전환
+        quizView.style.display = 'none';
+        wordbookView.style.display = 'flex';
+        e.target.textContent = '퀴즈 보기';
+        e.target.style.backgroundColor = '#ff9800';
+        updateCard();
+    }
+});
+
+function generateQuiz() {
+    const feedback = document.getElementById('quiz-feedback');
+    feedback.textContent = ""; // 피드백 초기화
+    
+    // 정답 단어 1개 무작위 선택
+    const correctIndex = Math.floor(Math.random() * words.length);
+    const correctWord = words[correctIndex];
+    
+    document.getElementById('quiz-kanji').textContent = correctWord.kanji;
+    
+    // 오답 3개 추가 (정답과 겹치지 않게)
+    let options = [correctWord];
+    while(options.length < 4) {
+        const wrongIndex = Math.floor(Math.random() * words.length);
+        const wrongWord = words[wrongIndex];
+        // 배열에 없는 단어만 추가
+        if (!options.includes(wrongWord)) {
+            options.push(wrongWord);
+        }
+    }
+    
+    // 보기 순서 무작위 섞기
+    options.sort(() => Math.random() - 0.5);
+    
+    const optionsContainer = document.getElementById('quiz-options');
+    optionsContainer.innerHTML = ''; // 기존 버튼 초기화
+    
+    // 4개의 버튼 생성
+    options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'quiz-option';
+        btn.textContent = `${opt.yomigana} (${opt.meaning})`;
+        
+        // 정답 여부 저장
+        if (opt === correctWord) {
+            btn.dataset.correct = "true";
+        }
+
+        btn.onclick = () => checkAnswer(btn, optionsContainer);
+        optionsContainer.appendChild(btn);
+    });
+}
+
+function checkAnswer(clickedBtn, container) {
+    // 한 번 클릭하면 모든 버튼 비활성화
+    const allBtns = container.querySelectorAll('.quiz-option');
+    allBtns.forEach(b => b.disabled = true);
+    
+    const isCorrect = clickedBtn.dataset.correct === "true";
+    const feedback = document.getElementById('quiz-feedback');
+
+    if (isCorrect) {
+        clickedBtn.classList.add('correct');
+        feedback.textContent = "⭕ 정답!";
+        feedback.style.color = "#4CAF50";
+    } else {
+        clickedBtn.classList.add('wrong');
+        feedback.textContent = "❌ 오답!";
+        feedback.style.color = "#f44336";
+        
+        // 오답을 골랐을 때 정답인 버튼을 초록색으로 표시해줌
+        allBtns.forEach(b => {
+            if (b.dataset.correct === "true") {
+                b.classList.add('correct');
+            }
+        });
+    }
+    
+    // 1.5초(1500ms) 뒤에 다음 퀴즈 자동 생성
+    setTimeout(generateQuiz, 1500);
+}
+
+// 시작
 window.onload = loadWords;
