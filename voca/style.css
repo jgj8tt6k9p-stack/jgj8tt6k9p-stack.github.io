@@ -31,21 +31,18 @@ body {
     height: 100%; padding: 20px; max-width: 500px; margin: 0 auto; width: 100%;
 }
 
-/* ヘッダー領域 */
+/* ヘッダー領域 (타이틀 좌측, 버튼 우측 정렬) */
 .header {
-    display: flex; justify-content: center; align-items: center;
-    position: relative; margin-bottom: 20px; height: 40px;
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 15px; height: 40px;
 }
 
-h1 { font-size: 22px; color: #333; margin: 0; transition: color 0.3s; }
+h1 { font-size: 22px; color: #333; margin: 0; transition: color 0.3s; text-align: left; }
 
-/* 右側コントロール（クイズ＋テーマ切替） */
 .header-controls {
-    position: absolute; right: 0; 
-    display: flex; align-items: left; gap: 8px;
+    display: flex; align-items: center; gap: 8px;
 }
 
-/* テーマ切替ボタン（テキスト化に伴うデザイン修正） */
 .btn-dark {
     padding: 6px 14px; font-size: 13px; font-weight: bold;
     background-color: #e0e0e0; color: #333; border-radius: 20px;
@@ -53,11 +50,23 @@ h1 { font-size: 22px; color: #333; margin: 0; transition: color 0.3s; }
     display: flex; align-items: center; justify-content: center;
 }
 
-/* クイズ切替ボタン */
 .btn-toggle {
     padding: 6px 14px; font-size: 13px; font-weight: bold;
     background-color: #ff9800; color: white; border-radius: 20px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* 챕터 선택 드롭다운 */
+.chapter-controls {
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.chapter-select {
+    width: 100%; padding: 12px; font-size: 16px; font-weight: bold;
+    border-radius: 8px; border: none; background-color: white; color: #333;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); cursor: pointer;
+    font-family: inherit; transition: background-color 0.3s, color 0.3s;
 }
 
 .view-section { display: flex; flex-direction: column; flex: 1; width: 100%; }
@@ -125,52 +134,26 @@ button { border: none; cursor: pointer; font-family: inherit; transition: all 0.
 /* ===================================================
    ==== 🌙 ダークモード スタイル (기본 활성화) ====
    =================================================== */
-body.dark-mode {
-    background-color: #0b111e;
-    color: #e2e8f0;
-}
+body.dark-mode { background-color: #0b111e; color: #e2e8f0; }
+body.dark-mode h1, body.dark-mode .quiz-question, body.dark-mode .result-title { color: #f1f5f9; }
 
-body.dark-mode h1, 
-body.dark-mode .quiz-question, 
-body.dark-mode .result-title {
-    color: #f1f5f9;
-}
+/* 다크모드 드롭다운 메뉴 */
+body.dark-mode .chapter-select { background-color: #151f32; color: #f1f5f9; border: 1px solid #1e2d4a; }
 
-body.dark-mode .card-front, 
-body.dark-mode .card-back,
-body.dark-mode #quiz-result-area {
-    background-color: #151f32;
-    border: 1px solid #1e2d4a;
-    box-shadow: 0 8px 32px rgba(0, 150, 255, 0.25);
+body.dark-mode .card-front, body.dark-mode .card-back, body.dark-mode #quiz-result-area {
+    background-color: #151f32; border: 1px solid #1e2d4a; box-shadow: 0 8px 32px rgba(0, 150, 255, 0.25);
 }
-
 body.dark-mode .card-front { color: #ffffff; }
 body.dark-mode .card-back { background-color: #151f32; }
 body.dark-mode .meaning { color: #cbd5e1; }
 
-body.dark-mode .mode-controls button {
-    background-color: #1e293b;
-    color: #94a3b8;
-}
-body.dark-mode .mode-controls button.active {
-    background-color: #0084ff;
-    color: white;
-    box-shadow: 0 0 12px rgba(0, 132, 255, 0.6);
-}
+body.dark-mode .mode-controls button { background-color: #1e293b; color: #94a3b8; }
+body.dark-mode .mode-controls button.active { background-color: #0084ff; color: white; box-shadow: 0 0 12px rgba(0, 132, 255, 0.6); }
 
 body.dark-mode .quiz-option {
-    background-color: #151f32;
-    border: 2px solid #0084ff;
-    color: #f1f5f9;
-    box-shadow: 0 0 10px rgba(0, 132, 255, 0.15);
+    background-color: #151f32; border: 2px solid #0084ff; color: #f1f5f9; box-shadow: 0 0 10px rgba(0, 132, 255, 0.15);
 }
-
 body.dark-mode .quiz-progress { color: #64748b; }
-
-/* 다크모드일 때 다크모드 버튼 디자인 */
 body.dark-mode .btn-dark {
-    background-color: #1e293b;
-    color: #e2e8f0;
-    border: 1px solid #334155;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    background-color: #1e293b; color: #e2e8f0; border: 1px solid #334155; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }

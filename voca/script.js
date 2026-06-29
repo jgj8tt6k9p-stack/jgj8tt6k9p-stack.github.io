@@ -1,7 +1,11 @@
-let words = [];
+let allWords = []; // CSV에서 불러온 전체 단어
+let chapterWords = []; // 현재 선택된 장(챕터)의 단어들 (최대 100개)
 let currentIndex = 0;
 let isRandom = false;
 
+const WORDS_PER_CHAPTER = 100;
+
+// 퀴즈 변수
 let quizWords = [];
 let quizCurrentIndex = 0;
 let quizCorrectCount = 0;
@@ -14,7 +18,7 @@ async function loadWords() {
         
         const lines = text.trim().split('\n').filter(line => line.length > 0);
         
-        words = lines.map(line => {
+        allWords = lines.map(line => {
             const [kanji, yomigana, meaning] = line.split(',');
             return {
                 kanji: kanji ? kanji.trim() : "",
@@ -23,23 +27,71 @@ async function loadWords() {
             };
         });
 
-        if(words.length > 0) {
-            updateCard();
+        if(allWords.length > 0) {
+            setupChapterSelect();
         } else {
             document.getElementById('word-kanji').textContent = "単語がありません。";
+            document.getElementById('chapter-select').innerHTML = '<option>データなし</option>';
         }
     } catch (error) {
         console.error('단어장을 불러오는 데 실패했습니다.', error);
         document.getElementById('word-kanji').textContent = "エラー";
+        document.getElementById('chapter-select').innerHTML = '<option>エラー</option>';
     }
 }
 
 /* ============================
-   단어장 로직
+   챕터(장) 분리 로직
+============================ */
+function setupChapterSelect() {
+    const select = document.getElementById('chapter-select');
+    select.innerHTML = ''; // 초기화
+    
+    // 필요한 총 챕터 수 계산 (예: 430개 -> 5챕터)
+    const totalChapters = Math.ceil(allWords.length / WORDS_PER_CHAPTER);
+    
+    for (let i = 0; i < totalChapters; i++) {
+        const start = i * WORDS_PER_CHAPTER + 1;
+        const end = Math.min((i + 1) * WORDS_PER_CHAPTER, allWords.length);
+        
+        const option = document.createElement('option');
+        option.value = i;
+        // 예: 第1章 (1~100)
+        option.textContent = `第${i + 1}章 (${start} ~ ${end})`;
+        select.appendChild(option);
+    }
+
+    // 챕터가 바뀌면 동작할 이벤트
+    select.addEventListener('change', (e) => {
+        const chapterIndex = parseInt(e.target.value);
+        changeChapter(chapterIndex);
+    });
+
+    // 초기 로딩 시 1장(인덱스 0) 자동 선택
+    changeChapter(0);
+}
+
+function changeChapter(chapterIndex) {
+    const start = chapterIndex * WORDS_PER_CHAPTER;
+    const end = start + WORDS_PER_CHAPTER;
+    
+    // 전체 단어에서 해당 챕터 분량만 잘라내기
+    chapterWords = allWords.slice(start, end);
+    
+    // 상태 초기화
+    currentIndex = 0;
+    
+    // 순서 모드로 강제 초기화할지 유지할지는 취향껏 (여기선 유지하되 첫단어로)
+    updateCard();
+}
+
+
+/* ============================
+   단어장 로직 (chapterWords 기준)
 ============================ */
 function updateCard() {
-    if (words.length === 0) return;
-    const currentWord = words[currentIndex];
+    if (chapterWords.length === 0) return;
+    const currentWord = chapterWords[currentIndex];
     
     document.getElementById('word-kanji').textContent = currentWord.kanji;
     document.getElementById('word-yomigana').textContent = currentWord.yomigana;
@@ -55,20 +107,20 @@ document.getElementById('card-container').addEventListener('click', () => {
 document.getElementById('btn-next').addEventListener('click', () => {
     if (isRandom) {
         let newIndex;
-        do { newIndex = Math.floor(Math.random() * words.length); } 
-        while (newIndex === currentIndex && words.length > 1);
+        do { newIndex = Math.floor(Math.random() * chapterWords.length); } 
+        while (newIndex === currentIndex && chapterWords.length > 1);
         currentIndex = newIndex;
     } else {
-        currentIndex = (currentIndex + 1) % words.length; 
+        currentIndex = (currentIndex + 1) % chapterWords.length; 
     }
     updateCard();
 });
 
 document.getElementById('btn-prev').addEventListener('click', () => {
     if (isRandom) {
-        currentIndex = Math.floor(Math.random() * words.length);
+        currentIndex = Math.floor(Math.random() * chapterWords.length);
     } else {
-        currentIndex = (currentIndex - 1 + words.length) % words.length; 
+        currentIndex = (currentIndex - 1 + chapterWords.length) % chapterWords.length; 
     }
     updateCard();
 });
@@ -89,27 +141,37 @@ document.getElementById('btn-rand').addEventListener('click', (e) => {
 });
 
 /* ============================
-   화면 전환 및 퀴즈 로직
+   화면 전환 및 퀴즈 로직 (chapterWords 기준)
 ============================ */
 document.getElementById('btn-quiz-toggle').addEventListener('click', (e) => {
     const quizView = document.getElementById('quiz-view');
     const wordbookView = document.getElementById('wordbook-view');
 
     if (quizView.style.display === 'none') {
-        if (words.length < 4) {
-            alert("クイズを始めるには単語が少なくとも4個以上必要です。");
+        if (chapterWords.length < 4) {
+            // 현재 장의 단어가 4개 미만일 경우 예외 처리
+            // (100개 단위 분할이므로 보통 마지막 장에서 발생 가능)
+            alert("この章の単語が4個未満のため、クイズができません。");
             return;
         }
         wordbookView.style.display = 'none';
         quizView.style.display = 'flex';
         e.target.textContent = '単語帳';
         e.target.style.backgroundColor = '#4CAF50';
+        
+        // 퀴즈 중에는 챕터 이동 막기
+        document.getElementById('chapter-select').disabled = true;
+        
         startQuizSession();
     } else {
         quizView.style.display = 'none';
         wordbookView.style.display = 'flex';
         e.target.textContent = 'クイズ';
         e.target.style.backgroundColor = '#ff9800';
+        
+        // 챕터 이동 다시 허용
+        document.getElementById('chapter-select').disabled = false;
+        
         updateCard();
     }
 });
@@ -117,7 +179,8 @@ document.getElementById('btn-quiz-toggle').addEventListener('click', (e) => {
 function startQuizSession() {
     quizCorrectCount = 0;
     quizCurrentIndex = 0;
-    quizWords = [...words].sort(() => Math.random() - 0.5);
+    // 현재 선택된 장(chapterWords)만으로 퀴즈 배열 생성 후 셔플
+    quizWords = [...chapterWords].sort(() => Math.random() - 0.5);
     
     document.getElementById('quiz-play-area').style.display = 'flex';
     document.getElementById('quiz-result-area').style.display = 'none';
@@ -139,10 +202,11 @@ function generateQuiz() {
     const correctWord = quizWords[quizCurrentIndex];
     document.getElementById('quiz-kanji').textContent = correctWord.kanji;
     
+    // 오답은 현재 장 안에서만 뽑기
     let options = [correctWord];
     while(options.length < 4) {
-        const wrongIndex = Math.floor(Math.random() * words.length);
-        const wrongWord = words[wrongIndex];
+        const wrongIndex = Math.floor(Math.random() * chapterWords.length);
+        const wrongWord = chapterWords[wrongIndex];
         if (!options.includes(wrongWord)) {
             options.push(wrongWord);
         }
@@ -206,17 +270,17 @@ function showQuizResult() {
 document.getElementById('btn-quiz-restart').addEventListener('click', startQuizSession);
 
 /* ============================
-   🌙 テーマ切替 (텍스트 기반 및 기본 다크 모드)
+   🌙 テーマ切替
 ============================ */
 const btnDarkMode = document.getElementById('btn-dark-mode');
 
 btnDarkMode.addEventListener('click', () => {
     document.body.classList.toggle('dark-mode');
     if (document.body.classList.contains('dark-mode')) {
-        btnDarkMode.textContent = '明るい'; // 누르면 밝아짐을 의미
+        btnDarkMode.textContent = '明るい'; 
         localStorage.setItem('theme', 'dark');
     } else {
-        btnDarkMode.textContent = 'ダーク'; // 누르면 어두워짐을 의미
+        btnDarkMode.textContent = 'ダーク'; 
         localStorage.setItem('theme', 'light');
     }
 });
@@ -224,12 +288,10 @@ btnDarkMode.addEventListener('click', () => {
 function applyTheme() {
     const savedTheme = localStorage.getItem('theme');
     
-    // 명시적으로 라이트 모드를 선택했던 적이 있는 경우에만 라이트 모드 적용
     if (savedTheme === 'light') {
         document.body.classList.remove('dark-mode');
         btnDarkMode.textContent = 'ダーク';
     } else {
-        // 처음 방문했거나(null) 다크 모드가 저장된 상태라면 -> 기본적으로 다크 모드 작동
         document.body.classList.add('dark-mode');
         btnDarkMode.textContent = '明るい';
     }
