@@ -31,7 +31,6 @@ body {
     height: 100%; padding: 20px; max-width: 500px; margin: 0 auto; width: 100%;
 }
 
-/* ヘッダー領域 (타이틀 좌측, 버튼 우측 정렬) */
 .header {
     display: flex; justify-content: space-between; align-items: center;
     margin-bottom: 15px; height: 40px;
@@ -39,9 +38,7 @@ body {
 
 h1 { font-size: 22px; color: #333; margin: 0; transition: color 0.3s; text-align: left; }
 
-.header-controls {
-    display: flex; align-items: center; gap: 8px;
-}
+.header-controls { display: flex; align-items: center; gap: 8px; }
 
 .btn-dark {
     padding: 6px 14px; font-size: 13px; font-weight: bold;
@@ -56,12 +53,7 @@ h1 { font-size: 22px; color: #333; margin: 0; transition: color 0.3s; text-align
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* 챕터 선택 드롭다운 */
-.chapter-controls {
-    margin-bottom: 15px;
-    width: 100%;
-}
-
+.chapter-controls { margin-bottom: 15px; width: 100%; }
 .chapter-select {
     width: 100%; padding: 12px; font-size: 16px; font-weight: bold;
     border-radius: 8px; border: none; background-color: white; color: #333;
@@ -79,7 +71,6 @@ button { border: none; cursor: pointer; font-family: inherit; transition: all 0.
 }
 .mode-controls button.active { background-color: #007bff; color: white; }
 
-/* フラッシュカード */
 .flashcard { flex: 1; width: 100%; perspective: 1000px; cursor: pointer; margin-bottom: 20px; }
 .card { width: 100%; height: 100%; position: relative; transition: transform 0.5s; transform-style: preserve-3d; }
 .card.is-flipped { transform: rotateY(180deg); }
@@ -87,12 +78,21 @@ button { border: none; cursor: pointer; font-family: inherit; transition: all 0.
     width: 100%; height: 100%; position: absolute; backface-visibility: hidden;
     display: flex; flex-direction: column; justify-content: center; align-items: center;
     border-radius: 20px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); background-color: white;
-    padding: 20px; text-align: center; word-break: keep-all; transition: background-color 0.3s, border-color 0.3s;
+    padding: 20px; text-align: center; 
+    /* 긴 문장 줄바꿈 처리 */
+    word-break: keep-all; overflow-wrap: break-word; 
+    transition: background-color 0.3s, border-color 0.3s;
 }
-.card-front { font-size: 60px; font-weight: bold; color: #222; }
+
+/* 텍스트 컨테이너 높이 및 줄간격 확보 */
+#word-kanji, #word-yomigana, #word-meaning {
+    width: 100%; line-height: 1.3;
+}
+
+.card-front { font-weight: bold; color: #222; }
 .card-back { transform: rotateY(180deg); background-color: #fdfdfd; }
-.yomigana { font-size: 32px; color: #007bff; margin-bottom: 15px; font-weight: bold; }
-.meaning { font-size: 26px; color: #444; }
+.yomigana { color: #007bff; margin-bottom: 15px; font-weight: bold; }
+.meaning { color: #444; }
 
 .nav-controls { display: flex; gap: 15px; padding-bottom: 10px; }
 .nav-controls button {
@@ -102,21 +102,26 @@ button { border: none; cursor: pointer; font-family: inherit; transition: all 0.
 }
 .nav-controls button:active { background-color: #45a049; transform: translateY(2px); }
 
-/* クイズ */
 #quiz-play-area { display: flex; flex-direction: column; flex: 1; width: 100%; }
 .quiz-progress { text-align: center; font-size: 16px; font-weight: bold; color: #777; margin-top: 5px; }
-.quiz-question { font-size: 55px; font-weight: bold; text-align: center; color: #222; margin: 20px 0; flex: 0.4; display: flex; align-items: center; justify-content: center; transition: color 0.3s;}
+
+.quiz-question { 
+    font-weight: bold; text-align: center; color: #222; 
+    margin: 20px 0; flex: 0.4; display: flex; align-items: center; justify-content: center; 
+    transition: color 0.3s; line-height: 1.3; word-break: keep-all; overflow-wrap: break-word;
+}
+
 .quiz-options { display: flex; flex-direction: column; gap: 12px; }
 .quiz-option {
-    padding: 18px; font-size: 18px; background-color: white; border: 2px solid #007bff;
+    padding: 16px; font-size: 18px; background-color: white; border: 2px solid #007bff;
     color: #333; border-radius: 12px; text-align: center; font-weight: bold;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: background-color 0.2s, color 0.2s;
+    line-height: 1.2;
 }
 .quiz-option.correct { background-color: #4CAF50 !important; border-color: #4CAF50 !important; color: white !important; }
 .quiz-option.wrong { background-color: #f44336 !important; border-color: #f44336 !important; color: white !important; }
 .quiz-feedback { text-align: center; font-size: 22px; font-weight: bold; margin-top: 20px; min-height: 30px; }
 
-/* クイズ結果 */
 #quiz-result-area {
     display: flex; flex-direction: column; justify-content: center; align-items: center;
     flex: 1; text-align: center; background-color: white; border-radius: 20px;
@@ -131,25 +136,18 @@ button { border: none; cursor: pointer; font-family: inherit; transition: all 0.
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-/* ===================================================
-   ==== 🌙 ダークモード スタイル (기본 활성화) ====
-   =================================================== */
+/* 다크모드 설정 */
 body.dark-mode { background-color: #0b111e; color: #e2e8f0; }
 body.dark-mode h1, body.dark-mode .quiz-question, body.dark-mode .result-title { color: #f1f5f9; }
-
-/* 다크모드 드롭다운 메뉴 */
 body.dark-mode .chapter-select { background-color: #151f32; color: #f1f5f9; border: 1px solid #1e2d4a; }
-
 body.dark-mode .card-front, body.dark-mode .card-back, body.dark-mode #quiz-result-area {
     background-color: #151f32; border: 1px solid #1e2d4a; box-shadow: 0 8px 32px rgba(0, 150, 255, 0.25);
 }
 body.dark-mode .card-front { color: #ffffff; }
 body.dark-mode .card-back { background-color: #151f32; }
 body.dark-mode .meaning { color: #cbd5e1; }
-
 body.dark-mode .mode-controls button { background-color: #1e293b; color: #94a3b8; }
 body.dark-mode .mode-controls button.active { background-color: #0084ff; color: white; box-shadow: 0 0 12px rgba(0, 132, 255, 0.6); }
-
 body.dark-mode .quiz-option {
     background-color: #151f32; border: 2px solid #0084ff; color: #f1f5f9; box-shadow: 0 0 10px rgba(0, 132, 255, 0.15);
 }
