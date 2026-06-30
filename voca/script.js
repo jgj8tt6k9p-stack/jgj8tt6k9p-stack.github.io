@@ -3,6 +3,10 @@ let chapterWords = [];
 let currentIndex = 0;
 let isRandom = false;
 
+// 랜덤 셔플을 위한 배열과 인덱스 추가
+let randomSequence = [];
+let randomSequenceIndex = 0;
+
 const WORDS_PER_CHAPTER = 100;
 
 let quizWords = [];
@@ -69,7 +73,24 @@ function changeChapter(chapterIndex) {
     chapterWords = allWords.slice(start, end);
     currentIndex = 0;
     
+    // 랜덤 모드가 켜진 상태로 챕터를 바꿨을 경우, 새 챕터 단어로 다시 섞기
+    if (isRandom) {
+        generateRandomSequence();
+    }
+    
     updateCard();
+}
+
+/* ============================
+   중복 없는 랜덤(셔플) 시퀀스 생성 함수
+============================ */
+function generateRandomSequence() {
+    if (chapterWords.length === 0) return;
+    // 0부터 챕터 단어수-1 까지의 숫자 배열을 만든 뒤 무작위로 섞음
+    randomSequence = Array.from({length: chapterWords.length}, (_, i) => i);
+    randomSequence.sort(() => Math.random() - 0.5);
+    randomSequenceIndex = 0; // 셔플 후 첫 번째 순서부터 시작
+    currentIndex = randomSequence[randomSequenceIndex];
 }
 
 /* ============================
@@ -105,7 +126,6 @@ function updateCard() {
     if (chapterWords.length === 0) return;
     const currentWord = chapterWords[currentIndex];
     
-    // 자동 폰트 크기 조절 함수 적용
     applyDynamicFontSize(document.getElementById('word-kanji'), currentWord.kanji, 'kanji');
     applyDynamicFontSize(document.getElementById('word-yomigana'), currentWord.yomigana, 'yomigana');
     applyDynamicFontSize(document.getElementById('word-meaning'), currentWord.meaning, 'meaning');
@@ -117,21 +137,31 @@ document.getElementById('card-container').addEventListener('click', () => {
     document.getElementById('card').classList.toggle('is-flipped');
 });
 
+// 다음 단어 버튼
 document.getElementById('btn-next').addEventListener('click', () => {
     if (isRandom) {
-        let newIndex;
-        do { newIndex = Math.floor(Math.random() * chapterWords.length); } 
-        while (newIndex === currentIndex && chapterWords.length > 1);
-        currentIndex = newIndex;
+        randomSequenceIndex++;
+        // 챕터 내의 모든 단어를 무작위로 다 봤을 경우, 다시 새롭게 섞음
+        if (randomSequenceIndex >= chapterWords.length) {
+            generateRandomSequence();
+        } else {
+            currentIndex = randomSequence[randomSequenceIndex];
+        }
     } else {
         currentIndex = (currentIndex + 1) % chapterWords.length; 
     }
     updateCard();
 });
 
+// 이전 단어 버튼
 document.getElementById('btn-prev').addEventListener('click', () => {
     if (isRandom) {
-        currentIndex = Math.floor(Math.random() * chapterWords.length);
+        randomSequenceIndex--;
+        // 첫 단어에서 이전을 누르면 배열의 맨 끝(이미 섞인 순서의 마지막)으로 이동
+        if (randomSequenceIndex < 0) {
+            randomSequenceIndex = chapterWords.length - 1;
+        }
+        currentIndex = randomSequence[randomSequenceIndex];
     } else {
         currentIndex = (currentIndex - 1 + chapterWords.length) % chapterWords.length; 
     }
@@ -147,10 +177,14 @@ document.getElementById('btn-seq').addEventListener('click', (e) => {
 });
 
 document.getElementById('btn-rand').addEventListener('click', (e) => {
-    isRandom = true;
-    document.getElementById('btn-rand').classList.add('active');
-    document.getElementById('btn-seq').classList.remove('active');
-    updateCard(); 
+    if (!isRandom) {
+        isRandom = true;
+        document.getElementById('btn-rand').classList.add('active');
+        document.getElementById('btn-seq').classList.remove('active');
+        // 랜덤 모드를 처음 켤 때 카드 한 번 섞기
+        generateRandomSequence(); 
+        updateCard(); 
+    }
 });
 
 /* ============================
@@ -206,7 +240,6 @@ function generateQuiz() {
     document.getElementById('quiz-progress').textContent = `${quizCurrentIndex + 1} / ${quizWords.length}`;
 
     const correctWord = quizWords[quizCurrentIndex];
-    // 퀴즈 문제용 폰트 크기 자동 조절 적용
     applyDynamicFontSize(document.getElementById('quiz-kanji'), correctWord.kanji, 'kanji');
     
     let options = [correctWord];
@@ -230,7 +263,6 @@ function generateQuiz() {
         const optText = `${opt.yomigana} (${opt.meaning})`;
         btn.textContent = optText;
         
-        // 보기 텍스트가 너무 길면 버튼 내 폰트도 줄임
         if (optText.length > 25) {
             btn.style.fontSize = '14px';
         } else if (optText.length > 15) {
