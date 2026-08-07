@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>정보보안 실무 수행 내역 / 情報セキュリティ実務遂行履歴</title>
+    <style>
+        body { 
+            font-family: 'Meiryo UI', 'Pretendard', 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; 
+            background-color: #f8f9fa; 
+            color: #333; 
+            margin: 40px auto; 
+            max-width: 1200px;
+            line-height: 1.6;
+        }
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        h1 { 
+            color: #2c3e50; 
+            margin: 0;
+            font-size: 28px;
+        }
+        
+        /* Toggle Switch Styles */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            background-color: #e2e8f0;
+            border-radius: 30px;
+            padding: 4px;
+            position: relative;
+            width: 140px;
+            height: 36px;
+            cursor: pointer;
+        }
+        .toggle-option {
+            flex: 1;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: #718096;
+            z-index: 2;
+            transition: color 0.3s ease;
+        }
+        .toggle-option.active {
+            color: #2c3e50;
+        }
+        .toggle-slider {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 66px;
+            height: 28px;
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            z-index: 1;
+        }
+        .lang-ja .toggle-slider {
+            transform: translateX(66px);
+        }
+
+        .table-container {
+            background: #fff; 
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+        }
+        th, td { 
+            border-bottom: 1px solid #eaedf1; 
+            padding: 20px; 
+            vertical-align: top; 
+        }
+        th { 
+            background-color: #34495e; 
+            color: #ffffff; 
+            font-weight: 600; 
+            text-align: left; 
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+        th.text-center { text-align: center; }
+        tr:last-child td { border-bottom: none; }
+        tr:hover { background-color: #f8fbff; }
+        td:first-child { 
+            text-align: center; 
+            font-weight: bold; 
+            color: #3498db; 
+            font-size: 18px;
+        }
+        td.task-title {
+            font-weight: 700;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+        ul { 
+            margin: 0; 
+            padding-left: 20px; 
+        }
+        li { 
+            margin-bottom: 8px; 
+        }
+        li:last-child {
+            margin-bottom: 0;
+        }
+        .highlight { 
+            color: #e74c3c; 
+            font-weight: 600; 
+            background-color: #fdf0ed;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .date-badge {
+            display: inline-block;
+            background-color: #ecf0f1;
+            color: #7f8c8d;
+            font-size: 13px;
+            padding: 3px 8px;
+            border-radius: 12px;
+            margin-left: 8px;
+            font-weight: normal;
+        }
+        
+        /* Language Display Logic */
+        .content-ko { display: block; }
+        .content-ja { display: none; }
+        
+        .lang-ja .content-ko { display: none; }
+        .lang-ja .content-ja { display: block; }
+    </style>
+</head>
+<body id="body-container">
+    <div class="header-container">
+        <h1>
+            <span class="content-ko">💻 정보보안 업무 수행 내역 총정리</span>
+            <span class="content-ja">💻 情報セキュリティ実務遂行履歴 総まとめ</span>
+        </h1>
+        <div class="toggle-container" onclick="toggleLanguage()">
+            <div class="toggle-slider"></div>
+            <div class="toggle-option active" id="btn-ko">한국어</div>
+            <div class="toggle-option" id="btn-ja">日本語</div>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th width="6%" class="text-center">No.</th>
+                    <th width="28%">
+                        <span class="content-ko">주요 업무 (Project / Task)</span>
+                        <span class="content-ja">主要業務 (Project / Task)</span>
+                    </th>
+                    <th width="66%">
+                        <span class="content-ko">세부 내용 및 성과 (Details & Achievements)</span>
+                        <span class="content-ja">詳細内容及び成果 (Details & Achievements)</span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Item 1 -->
+                <tr>
+                    <td>1</td>
+                    <td class="task-title">
+                        <span class="content-ko">기술 보안 시스템 운영 및 매뉴얼 작성</span>
+                        <span class="content-ja">技術セキュリティシステムの運用及びマニュアル作成</span>
+                    </td>
+                    <td>
+                        <span class="content-ko">
+                            <ul>
+                                <li><strong>시스템 운영:</strong> 방화벽, SSLVPN, Cortex 등 핵심 시스템 룰 설정 및 조작 방법 매뉴얼 작성</li>
+                                <li><strong>운영 체계 매뉴얼 구축:</strong> 용어 정리 및 시스템별 모니터링 방안 수립</li>
+                                <li>보안 시스템 룰 네이밍 규칙(Naming Convention) 및 최적화 방안 확립</li>
+                            </ul>
+                        </span>
+                        <span class="content-ja">
+                            <ul>
+                                <li><strong>システム運用:</strong> ファイアウォール、SSLVPN、Cortexなどコアシステムのルール設定及び操作方法マニュアル作成</li>
+                                <li><strong>運用体制マニュアル構築:</strong> 用語定義及びシステム別モニタリング策の策定</li>
+                                <li>セキュリティシステムルールのネーミング規則(Naming Convention)及び最適化策の確立</li>
+                            </ul>
+                        </span>
+                    </td>
+                </tr>
+                <!-- Item 2 -->
+                <tr>
+                    <td>2</td>
+                    <td class="task-title">
+                        <span class="content-ko">포탈 WF 신청 및 보안 가이드 작성</span>
+                        <span class="content-ja">ポータルWF申請及びセキュリティガイド作成</span>
+                    </td>
+                    <td>
+                        <span class="content-ko">
+                            <ul>
+                                <li>사내 포탈 내 워크플로우(WF) 신청 프로세스 구축</li>
+                                <li>임직원 공개용 보안 에이전트 설치 가이드라인 작성 및 배포</li>
+                            </ul>
+                        </span>
+                        <span class="content-ja">
+                            <ul>
+                                <li>社内ポータル内のワークフロー(WF)申請プロセスの構築</li>
+                                <li>役職員向けセキュリティエージェントインストールガイドラインの作成及び配布</li>
+                            </ul>
+                        </span>
+                    </td>
+                </tr>
+                <!-- Item 3 -->
+                <tr>
+                    <td>3</td>
+                    <td class="task-title">
+                        <span class="content-ko">기안서 관리 및 운영 체계 확립</span>
+                        <span class="content-ja">起案書管理及び運用体制の確立</span>
+                    </td>
+                    <td>
+                        <span class="content-ko">
+                            <ul>
+                                <li>기안서별 Dooray(업무 협업 툴) 프로젝트에 내용 기록 및 대응 이력 자산화</li>
+                                <li>기존 불가능했던 <strong>문서 내 내용 검색이 가능하도록 개선</strong>하여 업무 효율성 증대</li>
+                                <li>기안서별 표준 템플릿 작성 및 태그(Tag) 식별화 적용</li>
+                            </ul>
+                        </span>
+                        <span class="content-ja">
+                            <ul>
+                                <li>起案書別Dooray(業務コラボレーションツール)プロジェクトに内容を記録し、対応履歴を資産化</li>
+                                <li>従来不可能であった<strong>文書内のテキスト検索を可能に改善</strong>し、業務効率性を増大</li>
+                                <li>起案書別標準テンプレートの作成及びタグ(Tag)識別化の適用</li>
+                            </ul>
+                        </span>
+                    </td>
+                </tr>
+                <!-- Item 4 -->
+                <tr>
+                    <td>4</td>
+                    <td class="task-title">
+                        <span class="content-ko">보안 기안서 프로세스 개선</span>
+                        <span class="content-ja">セキュリティ起案書プロセスの改善</span>
+                    </td>
+                    <td>
+                        <span class="content-ko">
+                            <ul>
+                                <li><strong>네트워크 ACL:</strong> 원격 데스크톱 신청 체계 확립 (1년 기한 제한 적용)</li>
+                                <li><strong>SSLVPN 계정:</strong> 기존 한국 측 서식을 반영하여 액세스 대역 추가/삭제 자동화</li>
+                                <li><strong>취약점 진단:</strong> 기존 불필요 서식 폐기 및 영역별(설계서, 네트워크, 클라우드, 애플리케이션) 진단 서식 세분화 작성</li>
+                                <li><strong>보안 예외 처리:</strong> DLP(단말, 외부URL, 애플리케이션) 신청 항목 추가</li>
+                            </ul>
+                        </span>
+                        <span class="content-ja">
+                            <ul>
+                                <li><strong>ネットワークACL:</strong> リモートデスクトップ申請体制の確立（1年間の期限制限適用）</li>
+                                <li><strong>SSLVPNアカウント:</strong> 既存の韓国側の書式を反映し、アクセス帯域の追加/削除を自動化</li>
+                                <li><strong>脆弱性診断:</strong> 既存の不要な書式を廃棄し、領域別（設計書、ネットワーク、クラウド、アプリケーション）の診断書式を細分化して作成</li>
+                                <li><strong>セキュリティ例外処理:</strong> DLP（端末、外部URL、アプリケーション）申請項目の追加</li>
+                            </ul>
+                        </span>
+                    </td>
+                </tr>
+                <!-- Item 5 -->
+                <tr>
+                    <td>5</td>
+                    <td class="task-title">
+                        <span class="content-ko">DLP 솔루션 구축 및 운영 안정화</span>
+                        <span class="content-ja">DLPソリューション構築及び運用安定化</span>
+                    </td>
+                    <td>
+                        <span class="content-ko">
+                            <ul>
+                                <li>개인정보검출솔루션(DLP) 구축 초기 단계부터 투입되어 인프라 적용 주도</li>
+                                <li>사내 환경에 맞춘 개인정보 검출 패턴 및 정책 정립을 통한 운영 안정화 달성</li>
+                                <li>도입 과정 내 버그 개선 및 조치</li>
+                                <li>Kibana 로그 연동을 통한 위협 탐지 로그 자동 알람 환경 구축</li>
+                            </ul>
+                        </span>
+                        <span class="content-ja">
+                            <ul>
+                                <li>個人情報検出ソリューション(DLP)構築の初期段階から投入され、インフラ適用を主導</li>
+                                <li>社内環境に合わせた個人情報検出パターン及びポリシーの策定を通じ、運用の安定化を達成</li>
+                                <li>導入プロセスにおけるバグの改善及び措置</li>
+                                <li>Kibanaログ連携を通じた脅威検知ログの自動アラーム環境の構築</li>
+                            </ul>
+                        </span>
+                    </td>
+                </tr>
+                <!-- Item 6 -->
+                <tr>
+                    <td>6</td>
+                    <td class="task-title">
+                        <span class="content-ko">부정 행위 모니터링 환경 구축</span>
+                        <span class="content-ja">不正行為モニタリング環境の構築</span>
+                    </td>
+                    <td>
+                        <span class="content-ko">
+                            <ul>
+                                <li><strong>자동 알람 환경 구축:</strong>
+                                    <ul>
+                                        <li>SSLVPN 비인가 국가 접속 시도 탐지</li>
+                                        <li>DLP 생성형 AI 개인정보 패턴 과다(30건 이상) 검출 탐지</li>
+                                        <li>사무실 외 근무지(자택 등)에서 사내 공유 폴더 내 파일 읽기/쓰기 비정상 이용 탐지</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </span>
+                        <span class="content-ja">
+                            <ul>
+                                <li><strong>自動アラーム環境の構築:</strong>
+                                    <ul>
+                                        <li>SSLVPN非認可国からのアクセス試行の検知</li>
+                                        <li>DLP生成AIによる個人情報パターンの過剰(30件以上)検出の検知</li>
+                                        <li>オフィス外の勤務地（自宅等）での社内共有フォルダ内のファイル読み取り/書き込みの異常利用の検知</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </span>
+                    </td>
+                </tr>
+                <!-- Item 7 -->
+                <tr>
+                    <td>7</td>
+                    <td class="task-title">
+                        <span class="content-ko">클라우드 자산 관리 시스템(SSS) 자체 구축<span class="date-badge">2026-04</span></span>
+                        <span class="content-ja">クラウド資産管理システム(SSS)の独自構築<span class="date-badge">2026-04</span></span>
+                    </td>
+                    <td>
+                        <span class="content-ko">
+                            <ul>
+                                <li>AI를 활용하여 사내 맞춤형 클라우드 자산 관리 시스템 <strong>직접 개발</strong></li>
+                                <li>부서에서 사용 중인 AWS 다중 계정 연동 및 리소스 정보(VPC, EC2, ECS, RDS 등) 자동 수집</li>
+                                <li>AWS Inspector2 연동 및 공개 CVE 데이터 연동을 통한 인프라 내 취약점 통합 검색 기능 개발</li>
+                                <li>신규 취약점 발견 시 <strong>전체 서버 대상 점검 스크립트 전송·실행 및 영향도 파악 기능</strong> 구현</li>
+                                <li>Dooray API 연동을 통한 담당 태스크 정보 수집 (공수 계산 도우미)</li>
+                                <li>내부 체크리스트 기반 AWS 컴플라이언스 진단 및 리스크 파악 기능 구현</li>
+                            </ul>
+                        </span>
+                        <span class="content-ja">
+                            <ul>
+                                <li>AIを活用し、社内向けのクラウド資産管理システムを<strong>独自に開発</strong></li>
+                                <li>部署で使用中のAWSマルチアカウント連携及びリソース情報（VPC、EC2、ECS、RDS等）の自動収集</li>
+                                <li>AWS Inspector2連携及び公開CVEデータ連携を通じたインフラ内の脆弱性統合検索機能の開発</li>
+                                <li>新規脆弱性発見時、<strong>全サーバー対象の点検スクリプトの送信・実行及び影響度把握機能</strong>の実装</li>
+                                <li>Dooray API連携による担当タスク情報の収集（工数計算アシスタント）</li>
+                                <li>内部チェックリストに基づくAWSコンプライアンス診断及びリスク把握機能の実装</li>
+                            </ul>
+                        </span>
+                    </td>
+                </tr>
+                <!-- Item 8 -->
+                <tr>
+                    <td>8</td>
+                    <td class="task-title">
+                        <span class="content-ko">클린데스크 점검 시스템화<span class="date-badge">2026-05</span></span>
+                        <span class="content-ja">クリアデスク点検のシステム化<span class="date-badge">2026-05</span></span>
+                    </td>
+                    <td>
+                        <span class="content-ko">
+                            <ul>
+                                <li>자체 개발한 보안 자산 관리 시스템(SSS)에 <strong>클린데스크 점검 기능 모듈 추가</strong></li>
+                                <li>각 층별 좌석 번호 배치, 점검 팝업(4개 항목) 연동, 위반 시 사진 촬영 및 이력 저장 기능 구현</li>
+                                <li>지정된 템플릿에 맞춘 점검 결과 자동 레포트 생성</li>
+                                <li><span class="highlight">성과:</span> 점검 대상이 150석에서 450석으로 3배 증가했음에도 소요 시간은 2시간에서 3시간으로 방어 (업무 효율성 215% 향상)</li>
+                            </ul>
+                        </span>
+                        <span class="content-ja">
+                            <ul>
+                                <li>独自開発のセキュリティ資産管理システム(SSS)に<strong>クリアデスク点検機能モジュールを追加</strong></li>
+                                <li>各フロアの座席番号配置、点検ポップアップ（4項目）連携、違反時の写真撮影及び履歴保存機能の実装</li>
+                                <li>指定されたテンプレートに合わせた点検結果の自動レポート生成</li>
+                                <li><span class="highlight">成果:</span> 点検対象が150席から450席へと3倍に増加したにもかかわらず、所要時間は2時間から3時間にとどめ、業務効率を215%向上</li>
+                            </ul>
+                        </span>
+                    </td>
+                </tr>
+                <!-- Item 9 -->
+                <tr>
+                    <td>9</td>
+                    <td class="task-title">
+                        <span class="content-ko">보안 사고 대응 가이드 작성</span>
+                        <span class="content-ja">セキュリティインシデント対応ガイドの作成</span>
+                    </td>
+                    <td>
+                        <span class="content-ko">
+                            <ul>
+                                <li>한국 본사의 보안 정책 가이드를 참고하여 <strong>일본 법인 환경에 최적화된 사고 대응 가이드</strong> 제정</li>
+                            </ul>
+                        </span>
+                        <span class="content-ja">
+                            <ul>
+                                <li>韓国本社のセキュリティポリシーガイドを参考に、<strong>日本法人の環境に最適化されたインシデント対応ガイド</strong>を制定</li>
+                            </ul>
+                        </span>
+                    </td>
+                </tr>
+                <!-- Item 10 -->
+                <tr>
+                    <td>10</td>
+                    <td class="task-title">
+                        <span class="content-ko">보안 네트워크 구성 재파악</span>
+                        <span class="content-ja">セキュリティネットワーク構成の再把握</span>
+                    </td>
+                    <td>
+                        <span class="content-ko">
+                            <ul>
+                                <li>최신 인프라 환경을 반영한 사내 보안 네트워크 구성도 전면 재작성 (기존 대비 가시성 대폭 확보)</li>
+                            </ul>
+                        </span>
+                        <span class="content-ja">
+                            <ul>
+                                <li>最新のインフラ環境を反映した社内セキュリティネットワーク構成図の全面再作成（従来比で可視性を大幅に確保）</li>
+                            </ul>
+                        </span>
+                    </td>
+                </tr>
+                <!-- Item 11 -->
+                <tr>
+                    <td>11</td>
+                    <td class="task-title">
+                        <span class="content-ko">CI/CD 환경 구축 (AI 코딩용)<span class="date-badge">2026-08</span></span>
+                        <span class="content-ja">CI/CD環境の構築（AIコーディング用）<span class="date-badge">2026-08</span></span>
+                    </td>
+                    <td>
+                        <span class="content-ko">
+                            <ul>
+                                <li>AI 바이브 코딩을 위한 GitLab 서버 신규 구축</li>
+                                <li>원격 저장소(Repository) 셋업 및 자동 배포(GitLab Runner) 파이프라인 구성</li>
+                            </ul>
+                        </span>
+                        <span class="content-ja">
+                            <ul>
+                                <li>AIバイブコーディング用のGitLabサーバーの新規構築</li>
+                                <li>リモートリポジトリ(Repository)のセットアップ及び自動デプロイ(GitLab Runner)パイプラインの構成</li>
+                            </ul>
+                        </span>
+                    </td>
+                </tr>
+                <!-- Item 12 -->
+                <tr>
+                    <td>12</td>
+                    <td class="task-title">
+                        <span class="content-ko">단말 보안 비용 청구 체계 확립</span>
+                        <span class="content-ja">エンドポイントセキュリティ費用請求体制の確立</span>
+                    </td>
+                    <td>
+                        <span class="content-ko">
+                            <ul>
+                                <li>DLP, Cortex 등 단말 보안 에이전트 설치 현황 및 정보 자산 데이터 확보/자료화</li>
+                                <li>매월 재무팀 비용 정산을 위한 현황 파악 및 태스크 등록 프로세스 정립</li>
+                            </ul>
+                        </span>
+                        <span class="content-ja">
+                            <ul>
+                                <li>DLP、Cortexなどの端末セキュリティエージェントのインストール状況及び情報資産データの確保/資料化</li>
+                                <li>毎月の財務チーム費用精算のための現状把握及びタスク登録プロセスの確立</li>
+                            </ul>
+                        </span>
+                    </td>
+                </tr>
+                <!-- Item 13 -->
+                <tr>
+                    <td>13</td>
+                    <td class="task-title">
+                        <span class="content-ko">신규 취약점 리스크 검토 체계 확립</span>
+                        <span class="content-ja">新規脆弱性リスク検討体制の確立</span>
+                    </td>
+                    <td>
+                        <span class="content-ko">
+                            <ul>
+                                <li>중계 서버를 통해 전체 서버에 접근하여 소프트웨어 버전 현황을 파악하는 스크립트 실행 체계 구축</li>
+                                <li>전사 서버에 대한 결과 파일 자동 확보</li>
+                                <li>리스크가 존재하는 서버 식별, 보안 조치 권고 및 패치 이행 모니터링 프로세스 정착</li>
+                            </ul>
+                        </span>
+                        <span class="content-ja">
+                            <ul>
+                                <li>中継サーバーを通じて全サーバーにアクセスし、ソフトウェアのバージョン状況を把握するスクリプト実行体制の構築</li>
+                                <li>全社のサーバーに対する結果ファイルの自動確保</li>
+                                <li>リスクが存在するサーバーの識別、セキュリティ対策の勧告及びパッチ適用のモニタリングプロセスの定着</li>
+                            </ul>
+                        </span>
+                    </td>
+                </tr>
+                <!-- Item 14 -->
+                <tr>
+                    <td>14</td>
+                    <td class="task-title">
+                        <span class="content-ko">에이전트 배포 환경 구축<span class="date-badge">2026-07~08</span></span>
+                        <span class="content-ja">エージェント配布環境の構築<span class="date-badge">2026-07~08</span></span>
+                    </td>
+                    <td>
+                        <span class="content-ko">
+                            <ul>
+                                <li>Cortex XDR와 일반 서버를 활용하여 Python 스크립트를 통한 에이전트 자동 배포 환경 구축</li>
+                                <li>일반 서버 내 에이전트 설치 파일 업로드 및 관리 체계 마련</li>
+                                <li>Cortex XDR의 Python Script 실행 기능을 활용하여 대상 서버에서 설치 파일을 자동 다운로드 및 설치하도록 구현</li>
+                            </ul>
+                        </span>
+                        <span class="content-ja">
+                            <ul>
+                                <li>Cortex XDRと一般サーバーを活用し、Pythonスクリプトによるエージェントの自動配布環境を構築</li>
+                                <li>一般サーバー内へのエージェントインストールファイルのアップロード及び管理体制の整備</li>
+                                <li>Cortex XDRのPython Script実行機能を活用し、対象サーバーにてインストールファイルを自動ダウンロード及びインストールするように実装</li>
+                            </ul>
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function toggleLanguage() {
+            const body = document.getElementById('body-container');
+            const btnKo = document.getElementById('btn-ko');
+            const btnJa = document.getElementById('btn-ja');
+            
+            body.classList.toggle('lang-ja');
+            
+            if (body.classList.contains('lang-ja')) {
+                btnJa.classList.add('active');
+                btnKo.classList.remove('active');
+            } else {
+                btnKo.classList.add('active');
+                btnJa.classList.remove('active');
+            }
+        }
+    </script>
+</body>
+</html>
