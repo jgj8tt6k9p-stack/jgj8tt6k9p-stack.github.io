@@ -1,24 +1,23 @@
 let allWords = []; 
 let chapterWords = []; 
 let currentChunkSize = 20;
-let currentChapterIndex = 0; // 현재 학습 중인 챕터 번호 저장
+let currentChapterIndex = 0; 
 
 let studySequence = []; 
 let currentStep = 0;    
 let isRandom = false;
 
-// "챕터 단위" 암기 상태를 저장할 Set
 let memorizedChapters = new Set();
 
 let quizSequence = [];
 let quizCurrentIndex = 0;
 let quizCorrectCount = 0;
+let currentQuizType = 'yomi'; // 'yomi' (읽는법 퀴즈) 또는 'imi' (뜻 퀴즈)
 
 const views = ['view-home', 'view-chapters', 'view-study', 'view-completion', 'view-quiz', 'view-quiz-result'];
 
 async function loadWords() {
     try {
-        // 저장된 챕터 암기 데이터 불러오기 (예: ["20_0", "100_1"])
         const savedChapters = JSON.parse(localStorage.getItem('memorizedChapters')) || [];
         memorizedChapters = new Set(savedChapters);
 
@@ -46,9 +45,6 @@ async function loadWords() {
     }
 }
 
-/* ============================
-   화면 제어 함수
-============================ */
 function showView(viewId) {
     views.forEach(id => {
         document.getElementById(id).style.display = 'none';
@@ -70,20 +66,16 @@ document.getElementById('btn-back').addEventListener('click', () => {
     if (activeView === 'view-chapters') {
         showView('view-home');
     } else if (['view-study', 'view-completion', 'view-quiz', 'view-quiz-result'].includes(activeView)) {
-        // 목록으로 돌아갈 때 챕터 목록 화면을 새로고침하여 암기 상태 갱신
         setupChapters(currentChunkSize);
     }
 });
 
 /* ============================
-   1. 단위 선택 (홈 화면)
+   1. 단위 선택 & 2. 챕터 목록 생성
 ============================ */
 document.getElementById('btn-chunk-20').addEventListener('click', () => setupChapters(20));
 document.getElementById('btn-chunk-100').addEventListener('click', () => setupChapters(100));
 
-/* ============================
-   2. 챕터 목록 생성
-============================ */
 function setupChapters(chunkSize) {
     currentChunkSize = chunkSize;
     const listContainer = document.getElementById('chapter-list-container');
@@ -98,7 +90,6 @@ function setupChapters(chunkSize) {
         const btn = document.createElement('button');
         btn.className = 'btn-chapter';
         
-        // 이 장을 외웠는지 체크 (키 생성 예: "20개씩_0번째챕터" -> "20_0")
         const chapterKey = `${chunkSize}_${i}`;
         
         if (memorizedChapters.has(chapterKey)) {
@@ -175,7 +166,7 @@ document.getElementById('card-container').addEventListener('click', () => {
 document.getElementById('btn-next').addEventListener('click', () => {
     currentStep++;
     if (currentStep >= chapterWords.length) {
-        showCompletionScreen(); // 단어를 다 보면 완료 화면으로!
+        showView('view-completion'); // 학습이 끝나면 완료(퀴즈 선택) 화면으로
     } else {
         updateCard();
     }
@@ -183,9 +174,7 @@ document.getElementById('btn-next').addEventListener('click', () => {
 
 document.getElementById('btn-prev').addEventListener('click', () => {
     currentStep--;
-    if (currentStep < 0) {
-        currentStep = chapterWords.length - 1;
-    }
+    if (currentStep < 0) { currentStep = chapterWords.length - 1; }
     updateCard();
 });
 
@@ -205,46 +194,17 @@ document.getElementById('btn-rand').addEventListener('click', () => {
 
 
 /* ============================
-   4. 학습 완료 화면 & 챕터 암기 기능
+   4. 학습 완료 화면 (퀴즈 종류 선택)
 ============================ */
-function showCompletionScreen() {
-    showView('view-completion');
-    updateMarkChapterButton();
-}
-
-function updateMarkChapterButton() {
-    const btn = document.getElementById('btn-mark-chapter');
-    const chapterKey = `${currentChunkSize}_${currentChapterIndex}`;
-    
-    if (memorizedChapters.has(chapterKey)) {
-        btn.textContent = "✅ 暗記済みに設定中 (取消)"; // 외움 상태 (취소 가능)
-        btn.classList.add('active');
-    } else {
-        btn.textContent = "✔ この章を覚えた"; // 외우기 버튼
-        btn.classList.remove('active');
-    }
-}
-
-// 챕터 암기 버튼 클릭 시 저장/취소
-document.getElementById('btn-mark-chapter').addEventListener('click', () => {
-    const chapterKey = `${currentChunkSize}_${currentChapterIndex}`;
-    
-    if (memorizedChapters.has(chapterKey)) {
-        memorizedChapters.delete(chapterKey);
-    } else {
-        memorizedChapters.add(chapterKey);
-    }
-    
-    localStorage.setItem('memorizedChapters', JSON.stringify(Array.from(memorizedChapters)));
-    updateMarkChapterButton(); // UI 갱신
+document.getElementById('btn-go-quiz-yomi').addEventListener('click', () => {
+    if (chapterWords.length < 4) { alert("単語が4個未満のため、クイズができません。"); return; }
+    currentQuizType = 'yomi';
+    startQuizSession();
 });
 
-
-document.getElementById('btn-go-quiz').addEventListener('click', () => {
-    if (chapterWords.length < 4) {
-        alert("この章の単語が4個未満のため、クイズができません。");
-        return;
-    }
+document.getElementById('btn-go-quiz-imi').addEventListener('click', () => {
+    if (chapterWords.length < 4) { alert("単語が4個未満のため、クイズができません。"); return; }
+    currentQuizType = 'imi';
     startQuizSession();
 });
 
@@ -253,12 +213,12 @@ document.getElementById('btn-go-review').addEventListener('click', () => {
 });
 
 document.getElementById('btn-go-list-from-comp').addEventListener('click', () => {
-    setupChapters(currentChunkSize); // 챕터 목록 갱신 후 화면 전환
+    setupChapters(currentChunkSize);
 });
 
 
 /* ============================
-   5. 퀴즈 로직
+   5. 퀴즈 진행 로직
 ============================ */
 function startQuizSession() {
     quizCorrectCount = 0;
@@ -282,6 +242,14 @@ function generateQuiz() {
     const correctWord = quizSequence[quizCurrentIndex];
     applyDynamicFontSize(document.getElementById('quiz-kanji'), correctWord.kanji, 'kanji');
     
+    // 퀴즈 타입에 따라 문제에 표시할 힌트 변경
+    const hintElement = document.getElementById('quiz-hint');
+    if (currentQuizType === 'yomi') {
+        hintElement.textContent = `[ ${correctWord.meaning} ]`;
+    } else {
+        hintElement.textContent = `[ ${correctWord.yomigana} ]`;
+    }
+    
     let options = [correctWord];
     while(options.length < 4) {
         const wrongIndex = Math.floor(Math.random() * chapterWords.length);
@@ -299,7 +267,14 @@ function generateQuiz() {
         const btn = document.createElement('button');
         btn.className = 'quiz-option';
         
-        const optText = `${opt.yomigana} (${opt.meaning})`;
+        // 퀴즈 타입에 따라 보기에 표시할 텍스트 변경
+        let optText = "";
+        if (currentQuizType === 'yomi') {
+            optText = opt.yomigana;
+        } else {
+            optText = opt.meaning;
+        }
+
         btn.textContent = optText;
         if (optText.length > 25) { btn.style.fontSize = '14px'; } 
         else if (optText.length > 15) { btn.style.fontSize = '16px'; }
@@ -334,18 +309,51 @@ function checkAnswer(clickedBtn, container) {
     setTimeout(generateQuiz, 1500);
 }
 
+
 /* ============================
-   6. 퀴즈 결과 화면
+   6. 퀴즈 결과 화면 (암기 버튼 표시)
 ============================ */
 function showQuizResult() {
     showView('view-quiz-result');
     document.getElementById('quiz-result-score').textContent = `${quizCorrectCount} / ${quizSequence.length}`;
+    
+    // 퀴즈 결과 화면에서 암기 버튼 상태 갱신
+    updateMarkChapterButton();
 }
+
+function updateMarkChapterButton() {
+    const btn = document.getElementById('btn-mark-chapter');
+    const chapterKey = `${currentChunkSize}_${currentChapterIndex}`;
+    
+    if (memorizedChapters.has(chapterKey)) {
+        btn.textContent = "✅ 暗記済みに設定中 (取消)"; 
+        btn.classList.add('active');
+    } else {
+        btn.textContent = "✔ この章を覚えた"; 
+        btn.classList.remove('active');
+    }
+}
+
+// 퀴즈 결과 화면의 암기 버튼 클릭 시 처리
+document.getElementById('btn-mark-chapter').addEventListener('click', () => {
+    const chapterKey = `${currentChunkSize}_${currentChapterIndex}`;
+    
+    if (memorizedChapters.has(chapterKey)) {
+        memorizedChapters.delete(chapterKey);
+    } else {
+        memorizedChapters.add(chapterKey);
+    }
+    
+    localStorage.setItem('memorizedChapters', JSON.stringify(Array.from(memorizedChapters)));
+    updateMarkChapterButton(); // UI 갱신
+});
+
 
 document.getElementById('btn-quiz-restart').addEventListener('click', startQuizSession);
 document.getElementById('btn-go-list-from-quiz').addEventListener('click', () => {
     setupChapters(currentChunkSize);
 });
+
 
 /* ============================
    🌙 테마(다크모드) 제어

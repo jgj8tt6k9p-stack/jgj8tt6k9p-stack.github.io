@@ -67,17 +67,15 @@
             </div>
         </div>
 
-        <!-- 4. 학습 완료 화면 -->
+        <!-- 4. 학습 완료 화면 (퀴즈 종류 선택) -->
         <div id="view-completion" class="view-section" style="display: none;">
             <div class="completion-box">
                 <div class="completion-icon">🎉</div>
                 <div class="completion-title">この章を完了しました！</div>
                 <div class="completion-desc">次に何をしますか？</div>
                 <div class="completion-buttons">
-                    <!-- 챕터 단위 암기 버튼 -->
-                    <button id="btn-mark-chapter" class="btn-action chapter-memo">✔ この章を覚えた</button>
-                    
-                    <button id="btn-go-quiz" class="btn-action primary">クイズに挑戦</button>
+                    <button id="btn-go-quiz-yomi" class="btn-action primary">クイズ (読み方)</button>
+                    <button id="btn-go-quiz-imi" class="btn-action primary">クイズ (意味)</button>
                     <button id="btn-go-review" class="btn-action secondary">もう一度復習</button>
                     <button id="btn-go-list-from-comp" class="btn-action outline">一覧へ戻る</button>
                 </div>
@@ -87,18 +85,25 @@
         <!-- 5. 퀴즈 진행 화면 -->
         <div id="view-quiz" class="view-section" style="display: none;">
             <div class="quiz-progress" id="quiz-progress">0 / 0</div>
-            <div class="quiz-question" id="quiz-kanji">問題</div>
+            <!-- 문제에 힌트(뜻 또는 요미가타)를 함께 보여줄 영역 -->
+            <div class="quiz-question-container">
+                <div class="quiz-question" id="quiz-kanji">問題</div>
+                <div class="quiz-hint" id="quiz-hint"></div>
+            </div>
             <div class="quiz-options" id="quiz-options"></div>
             <div class="quiz-feedback" id="quiz-feedback"></div>
         </div>
 
-        <!-- 6. 퀴즈 결과 화면 -->
+        <!-- 6. 퀴즈 결과 화면 (여기서 챕터 암기 처리) -->
         <div id="view-quiz-result" class="view-section" style="display: none;">
             <div class="completion-box">
                 <div class="result-icon">🏆</div>
                 <div class="result-title">クイズ完了！</div>
                 <div class="result-score" id="quiz-result-score">0 / 0</div>
                 <div class="completion-buttons">
+                    <!-- 챕터 단위 암기 버튼 (퀴즈 완료 후 표시) -->
+                    <button id="btn-mark-chapter" class="btn-action chapter-memo">✔ この章を覚えた</button>
+                    
                     <button id="btn-quiz-restart" class="btn-action primary">もう一度挑戦</button>
                     <button id="btn-go-list-from-quiz" class="btn-action outline">一覧へ戻る</button>
                 </div>
