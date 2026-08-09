@@ -1,23 +1,29 @@
 let allWords = []; 
 let chapterWords = []; 
-let currentIndex = 0;
+let currentChunkSize = 20;
+
+let studySequence = []; 
+let currentStep = 0;    
 let isRandom = false;
 
-// 랜덤 셔플을 위한 배열과 인덱스 추가
-let randomSequence = [];
-let randomSequenceIndex = 0;
+// 암기 상태를 저장할 Set (로컬 스토리지 연동)
+let memorizedSet = new Set();
 
-const WORDS_PER_CHAPTER = 100;
-
-let quizWords = [];
+let quizSequence = [];
 let quizCurrentIndex = 0;
 let quizCorrectCount = 0;
 
+const views = ['view-home', 'view-chapters', 'view-study', 'view-completion', 'view-quiz', 'view-quiz-result'];
+
+// CSV 로드 및 저장된 암기 데이터 불러오기
 async function loadWords() {
     try {
+        // 암기된 단어 목록 불러오기
+        const savedMemorized = JSON.parse(localStorage.getItem('memorizedWords')) || [];
+        memorizedSet = new Set(savedMemorized);
+
         const response = await fetch('words.csv');
         const text = await response.text();
-        
         const lines = text.trim().split('\n').filter(line => line.length > 0);
         
         allWords = lines.map(line => {
@@ -30,206 +36,231 @@ async function loadWords() {
         });
 
         if(allWords.length > 0) {
-            setupChapterSelect();
+            showView('view-home');
         } else {
-            applyDynamicFontSize(document.getElementById('word-kanji'), "単語がありません。", "kanji");
-            document.getElementById('chapter-select').innerHTML = '<option>データなし</option>';
+            alert("単語データがありません。");
         }
     } catch (error) {
-        console.error('단어장을 불러오는 데 실패했습니다.', error);
-        applyDynamicFontSize(document.getElementById('word-kanji'), "エラー", "kanji");
-        document.getElementById('chapter-select').innerHTML = '<option>エラー</option>';
+        console.error('CSV로드 에러:', error);
+        alert("データの読み込みに失敗しました。");
     }
 }
 
-function setupChapterSelect() {
-    const select = document.getElementById('chapter-select');
-    select.innerHTML = ''; 
+/* ============================
+   화면 제어 함수
+============================ */
+function showView(viewId) {
+    views.forEach(id => {
+        document.getElementById(id).style.display = 'none';
+    });
+    document.getElementById(viewId).style.display = 'flex';
+
+    const btnBack = document.getElementById('btn-back');
+    if (viewId === 'view-home') {
+        btnBack.style.display = 'none';
+        document.getElementById('header-title').textContent = "日本語 単語帳";
+    } else {
+        btnBack.style.display = 'block';
+    }
+}
+
+document.getElementById('btn-back').addEventListener('click', () => {
+    const activeView = views.find(id => document.getElementById(id).style.display === 'flex');
     
-    const totalChapters = Math.ceil(allWords.length / WORDS_PER_CHAPTER);
+    if (activeView === 'view-chapters') {
+        showView('view-home');
+    } else if (['view-study', 'view-completion', 'view-quiz', 'view-quiz-result'].includes(activeView)) {
+        showView('view-chapters');
+    }
+});
+
+/* ============================
+   1. 단위 선택 (홈 화면)
+============================ */
+document.getElementById('btn-chunk-20').addEventListener('click', () => setupChapters(20));
+document.getElementById('btn-chunk-100').addEventListener('click', () => setupChapters(100));
+
+/* ============================
+   2. 챕터 목록 생성
+============================ */
+function setupChapters(chunkSize) {
+    currentChunkSize = chunkSize;
+    const listContainer = document.getElementById('chapter-list-container');
+    listContainer.innerHTML = '';
+    
+    const totalChapters = Math.ceil(allWords.length / chunkSize);
     
     for (let i = 0; i < totalChapters; i++) {
-        const start = i * WORDS_PER_CHAPTER + 1;
-        const end = Math.min((i + 1) * WORDS_PER_CHAPTER, allWords.length);
+        const start = i * chunkSize + 1;
+        const end = Math.min((i + 1) * chunkSize, allWords.length);
         
-        const option = document.createElement('option');
-        option.value = i;
-        option.textContent = `第${i + 1}章 (${start} ~ ${end})`;
-        select.appendChild(option);
+        const btn = document.createElement('button');
+        btn.className = 'btn-chapter';
+        btn.textContent = `第${i + 1}章 (${start} ~ ${end})`;
+        
+        btn.onclick = () => startChapter(i);
+        listContainer.appendChild(btn);
     }
-
-    select.addEventListener('change', (e) => {
-        const chapterIndex = parseInt(e.target.value);
-        changeChapter(chapterIndex);
-    });
-
-    changeChapter(0);
+    
+    document.getElementById('header-title').textContent = `${chunkSize}個ずつ学習`;
+    showView('view-chapters');
 }
 
-function changeChapter(chapterIndex) {
-    const start = chapterIndex * WORDS_PER_CHAPTER;
-    const end = start + WORDS_PER_CHAPTER;
-    
+/* ============================
+   3. 단어장 학습 시작 및 로직
+============================ */
+function startChapter(chapterIndex) {
+    const start = chapterIndex * currentChunkSize;
+    const end = start + currentChunkSize;
     chapterWords = allWords.slice(start, end);
-    currentIndex = 0;
     
-    // 랜덤 모드가 켜진 상태로 챕터를 바꿨을 경우, 새 챕터 단어로 다시 섞기
+    startStudySession();
+}
+
+function startStudySession() {
+    studySequence = Array.from({length: chapterWords.length}, (_, i) => i);
+    
     if (isRandom) {
-        generateRandomSequence();
+        studySequence.sort(() => Math.random() - 0.5);
     }
     
+    currentStep = 0;
+    showView('view-study');
     updateCard();
 }
 
-/* ============================
-   중복 없는 랜덤(셔플) 시퀀스 생성 함수
-============================ */
-function generateRandomSequence() {
-    if (chapterWords.length === 0) return;
-    // 0부터 챕터 단어수-1 까지의 숫자 배열을 만든 뒤 무작위로 섞음
-    randomSequence = Array.from({length: chapterWords.length}, (_, i) => i);
-    randomSequence.sort(() => Math.random() - 0.5);
-    randomSequenceIndex = 0; // 셔플 후 첫 번째 순서부터 시작
-    currentIndex = randomSequence[randomSequenceIndex];
-}
-
-/* ============================
-   글자 수에 따른 폰트 크기 자동 조절 로직
-============================ */
 function applyDynamicFontSize(element, text, type) {
     const len = text.length;
     let size = '';
     
     if (type === 'kanji') { 
-        if (len <= 4) size = '60px';
-        else if (len <= 8) size = '48px';
-        else if (len <= 15) size = '36px';
-        else if (len <= 25) size = '28px';
-        else size = '22px';
+        if (len <= 4) size = '60px'; else if (len <= 8) size = '48px'; else if (len <= 15) size = '36px'; else if (len <= 25) size = '28px'; else size = '22px';
     } else if (type === 'yomigana') { 
-        if (len <= 8) size = '32px';
-        else if (len <= 15) size = '26px';
-        else if (len <= 25) size = '20px';
-        else size = '16px';
+        if (len <= 8) size = '32px'; else if (len <= 15) size = '26px'; else if (len <= 25) size = '20px'; else size = '16px';
     } else if (type === 'meaning') { 
-        if (len <= 10) size = '26px';
-        else if (len <= 20) size = '22px';
-        else if (len <= 30) size = '18px';
-        else size = '15px';
+        if (len <= 10) size = '26px'; else if (len <= 20) size = '22px'; else if (len <= 30) size = '18px'; else size = '15px';
     }
-    
     element.style.fontSize = size;
     element.textContent = text;
 }
 
 function updateCard() {
     if (chapterWords.length === 0) return;
-    const currentWord = chapterWords[currentIndex];
+    
+    document.getElementById('study-progress').textContent = `${currentStep + 1} / ${chapterWords.length}`;
+    
+    const wordIndex = studySequence[currentStep];
+    const currentWord = chapterWords[wordIndex];
     
     applyDynamicFontSize(document.getElementById('word-kanji'), currentWord.kanji, 'kanji');
     applyDynamicFontSize(document.getElementById('word-yomigana'), currentWord.yomigana, 'yomigana');
     applyDynamicFontSize(document.getElementById('word-meaning'), currentWord.meaning, 'meaning');
 
+    // 암기 상태 체크 후 UI 업데이트
+    const isMemorized = memorizedSet.has(currentWord.kanji);
+    const badges = document.querySelectorAll('.memorized-badge');
+    badges.forEach(b => b.style.display = isMemorized ? 'block' : 'none');
+    
+    const btnMemo = document.getElementById('btn-memorize');
+    if (isMemorized) {
+        btnMemo.classList.add('active');
+        btnMemo.textContent = '✅ 覚えた'; // 외웠다 (완료)
+    } else {
+        btnMemo.classList.remove('active');
+        btnMemo.textContent = '✔ 覚える'; // 외우기 (미완료)
+    }
+
     document.getElementById('card').classList.remove('is-flipped');
 }
+
+// 암기 버튼 클릭 이벤트
+document.getElementById('btn-memorize').addEventListener('click', () => {
+    if (chapterWords.length === 0) return;
+    const currentWord = chapterWords[studySequence[currentStep]];
+    
+    if (memorizedSet.has(currentWord.kanji)) {
+        memorizedSet.delete(currentWord.kanji); // 암기 취소
+    } else {
+        memorizedSet.add(currentWord.kanji); // 암기 등록
+    }
+    
+    // 로컬 스토리지에 배열 형태로 저장
+    localStorage.setItem('memorizedWords', JSON.stringify(Array.from(memorizedSet)));
+    
+    // 버튼 및 뱃지 상태 즉시 갱신
+    updateCard();
+});
 
 document.getElementById('card-container').addEventListener('click', () => {
     document.getElementById('card').classList.toggle('is-flipped');
 });
 
-// 다음 단어 버튼
 document.getElementById('btn-next').addEventListener('click', () => {
-    if (isRandom) {
-        randomSequenceIndex++;
-        // 챕터 내의 모든 단어를 무작위로 다 봤을 경우, 다시 새롭게 섞음
-        if (randomSequenceIndex >= chapterWords.length) {
-            generateRandomSequence();
-        } else {
-            currentIndex = randomSequence[randomSequenceIndex];
-        }
+    currentStep++;
+    if (currentStep >= chapterWords.length) {
+        showView('view-completion');
     } else {
-        currentIndex = (currentIndex + 1) % chapterWords.length; 
-    }
-    updateCard();
-});
-
-// 이전 단어 버튼
-document.getElementById('btn-prev').addEventListener('click', () => {
-    if (isRandom) {
-        randomSequenceIndex--;
-        // 첫 단어에서 이전을 누르면 배열의 맨 끝(이미 섞인 순서의 마지막)으로 이동
-        if (randomSequenceIndex < 0) {
-            randomSequenceIndex = chapterWords.length - 1;
-        }
-        currentIndex = randomSequence[randomSequenceIndex];
-    } else {
-        currentIndex = (currentIndex - 1 + chapterWords.length) % chapterWords.length; 
-    }
-    updateCard();
-});
-
-document.getElementById('btn-seq').addEventListener('click', (e) => {
-    isRandom = false;
-    document.getElementById('btn-seq').classList.add('active');
-    document.getElementById('btn-rand').classList.remove('active');
-    currentIndex = 0; 
-    updateCard();
-});
-
-document.getElementById('btn-rand').addEventListener('click', (e) => {
-    if (!isRandom) {
-        isRandom = true;
-        document.getElementById('btn-rand').classList.add('active');
-        document.getElementById('btn-seq').classList.remove('active');
-        // 랜덤 모드를 처음 켤 때 카드 한 번 섞기
-        generateRandomSequence(); 
-        updateCard(); 
-    }
-});
-
-/* ============================
-   퀴즈 로직
-============================ */
-document.getElementById('btn-quiz-toggle').addEventListener('click', (e) => {
-    const quizView = document.getElementById('quiz-view');
-    const wordbookView = document.getElementById('wordbook-view');
-
-    if (quizView.style.display === 'none') {
-        if (chapterWords.length < 4) {
-            alert("この章の単語が4個未満のため、クイズができません。");
-            return;
-        }
-        wordbookView.style.display = 'none';
-        quizView.style.display = 'flex';
-        e.target.textContent = '単語帳';
-        e.target.style.backgroundColor = '#4CAF50';
-        document.getElementById('chapter-select').disabled = true;
-        
-        startQuizSession();
-    } else {
-        quizView.style.display = 'none';
-        wordbookView.style.display = 'flex';
-        e.target.textContent = 'クイズ';
-        e.target.style.backgroundColor = '#ff9800';
-        document.getElementById('chapter-select').disabled = false;
-        
         updateCard();
     }
 });
 
+document.getElementById('btn-prev').addEventListener('click', () => {
+    currentStep--;
+    if (currentStep < 0) {
+        currentStep = chapterWords.length - 1;
+    }
+    updateCard();
+});
+
+document.getElementById('btn-seq').addEventListener('click', () => {
+    isRandom = false;
+    document.getElementById('btn-seq').classList.add('active');
+    document.getElementById('btn-rand').classList.remove('active');
+    startStudySession(); 
+});
+
+document.getElementById('btn-rand').addEventListener('click', () => {
+    isRandom = true;
+    document.getElementById('btn-rand').classList.add('active');
+    document.getElementById('btn-seq').classList.remove('active');
+    startStudySession(); 
+});
+
+
+/* ============================
+   4. 학습 완료 화면 버튼 동작
+============================ */
+document.getElementById('btn-go-quiz').addEventListener('click', () => {
+    if (chapterWords.length < 4) {
+        alert("この章の単語が4個未満のため、クイズができません。");
+        return;
+    }
+    startQuizSession();
+});
+
+document.getElementById('btn-go-review').addEventListener('click', () => {
+    startStudySession(); 
+});
+
+document.getElementById('btn-go-list-from-comp').addEventListener('click', () => {
+    showView('view-chapters');
+});
+
+
+/* ============================
+   5. 퀴즈 로직
+============================ */
 function startQuizSession() {
     quizCorrectCount = 0;
     quizCurrentIndex = 0;
-    quizWords = [...chapterWords].sort(() => Math.random() - 0.5);
+    quizSequence = [...chapterWords].sort(() => Math.random() - 0.5);
     
-    document.getElementById('quiz-play-area').style.display = 'flex';
-    document.getElementById('quiz-result-area').style.display = 'none';
-    
+    showView('view-quiz');
     generateQuiz();
 }
 
 function generateQuiz() {
-    if (quizCurrentIndex >= quizWords.length) {
+    if (quizCurrentIndex >= quizSequence.length) {
         showQuizResult();
         return;
     }
@@ -237,9 +268,9 @@ function generateQuiz() {
     const feedback = document.getElementById('quiz-feedback');
     feedback.textContent = ""; 
     
-    document.getElementById('quiz-progress').textContent = `${quizCurrentIndex + 1} / ${quizWords.length}`;
+    document.getElementById('quiz-progress').textContent = `${quizCurrentIndex + 1} / ${quizSequence.length}`;
 
-    const correctWord = quizWords[quizCurrentIndex];
+    const correctWord = quizSequence[quizCurrentIndex];
     applyDynamicFontSize(document.getElementById('quiz-kanji'), correctWord.kanji, 'kanji');
     
     let options = [correctWord];
@@ -262,16 +293,10 @@ function generateQuiz() {
         
         const optText = `${opt.yomigana} (${opt.meaning})`;
         btn.textContent = optText;
-        
-        if (optText.length > 25) {
-            btn.style.fontSize = '14px';
-        } else if (optText.length > 15) {
-            btn.style.fontSize = '16px';
-        }
+        if (optText.length > 25) { btn.style.fontSize = '14px'; } 
+        else if (optText.length > 15) { btn.style.fontSize = '16px'; }
 
-        if (opt === correctWord) {
-            btn.dataset.correct = "true";
-        }
+        if (opt === correctWord) { btn.dataset.correct = "true"; }
 
         btn.onclick = () => checkAnswer(btn, optionsContainer);
         optionsContainer.appendChild(btn);
@@ -287,18 +312,13 @@ function checkAnswer(clickedBtn, container) {
 
     if (isCorrect) {
         clickedBtn.classList.add('correct');
-        feedback.textContent = "⭕ 正解！";
-        feedback.style.color = "#4CAF50";
+        feedback.textContent = "⭕ 正解！"; feedback.style.color = "#4CAF50";
         quizCorrectCount++;
     } else {
         clickedBtn.classList.add('wrong');
-        feedback.textContent = "❌ 不正解...";
-        feedback.style.color = "#f44336";
-        
+        feedback.textContent = "❌ 不正解..."; feedback.style.color = "#f44336";
         allBtns.forEach(b => {
-            if (b.dataset.correct === "true") {
-                b.classList.add('correct');
-            }
+            if (b.dataset.correct === "true") b.classList.add('correct');
         });
     }
     
@@ -306,18 +326,21 @@ function checkAnswer(clickedBtn, container) {
     setTimeout(generateQuiz, 1500);
 }
 
+
+/* ============================
+   6. 퀴즈 결과 화면
+============================ */
 function showQuizResult() {
-    document.getElementById('quiz-play-area').style.display = 'none';
-    document.getElementById('quiz-result-area').style.display = 'flex';
-    
-    const scoreElement = document.getElementById('quiz-result-score');
-    scoreElement.textContent = `${quizCorrectCount} / ${quizWords.length}`;
+    showView('view-quiz-result');
+    document.getElementById('quiz-result-score').textContent = `${quizCorrectCount} / ${quizSequence.length}`;
 }
 
 document.getElementById('btn-quiz-restart').addEventListener('click', startQuizSession);
+document.getElementById('btn-go-list-from-quiz').addEventListener('click', () => showView('view-chapters'));
+
 
 /* ============================
-   テーマ切替
+   🌙 테마(다크모드) 제어
 ============================ */
 const btnDarkMode = document.getElementById('btn-dark-mode');
 

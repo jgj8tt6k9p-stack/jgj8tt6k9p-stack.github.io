@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>日本語 単語帳 & クイズ</title>
+    
     <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="apple-touch-icon" href="icon.svg">
+    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -14,21 +16,34 @@
     </div>
 
     <div class="container">
+        <!-- 상단 헤더 -->
         <div class="header">
-            <h1>日本語 単語帳</h1>
+            <button id="btn-back" class="btn-back" style="display: none;">◀ 戻る</button>
+            <h1 id="header-title">日本語 単語帳</h1>
             <div class="header-controls">
-                <button id="btn-quiz-toggle" class="btn-toggle">クイズ</button>
                 <button id="btn-dark-mode" class="btn-dark">明るい</button>
             </div>
         </div>
         
-        <div class="chapter-controls">
-            <select id="chapter-select" class="chapter-select">
-                <option value="0">読み込み中...</option>
-            </select>
+        <!-- 1. 초기 화면 (단위 선택) -->
+        <div id="view-home" class="view-section">
+            <div class="home-title">学習単位を選んでください</div>
+            <div class="home-buttons">
+                <button id="btn-chunk-20" class="btn-chunk">20個ずつ学習</button>
+                <button id="btn-chunk-100" class="btn-chunk">100個ずつ学習</button>
+            </div>
         </div>
-        
-        <div id="wordbook-view" class="view-section">
+
+        <!-- 2. 챕터 목록 화면 -->
+        <div id="view-chapters" class="view-section" style="display: none;">
+            <div class="chapter-list-title">学習する章を選んでください</div>
+            <div id="chapter-list-container" class="chapter-list-container"></div>
+        </div>
+
+        <!-- 3. 단어장 학습 화면 -->
+        <div id="view-study" class="view-section" style="display: none;">
+            <div class="study-progress" id="study-progress">1 / 20</div>
+            
             <div class="mode-controls">
                 <button id="btn-seq" class="active">順番に</button>
                 <button id="btn-rand">ランダム</button>
@@ -37,13 +52,22 @@
             <div class="flashcard" id="card-container">
                 <div class="card" id="card">
                     <div class="card-front">
+                        <!-- 암기 완료 뱃지 -->
+                        <div class="memorized-badge" style="display: none;">✅</div>
                         <div id="word-kanji">読み込み中...</div>
                     </div>
                     <div class="card-back">
+                        <!-- 암기 완료 뱃지 -->
+                        <div class="memorized-badge" style="display: none;">✅</div>
                         <div id="word-yomigana" class="yomigana"></div>
                         <div id="word-meaning" class="meaning"></div>
                     </div>
                 </div>
+            </div>
+
+            <!-- 암기 상태 토글 버튼 -->
+            <div class="action-controls">
+                <button id="btn-memorize" class="btn-memorize">✔ 覚える</button>
             </div>
 
             <div class="nav-controls">
@@ -52,19 +76,38 @@
             </div>
         </div>
 
-        <div id="quiz-view" class="view-section" style="display: none;">
-            <div id="quiz-play-area">
-                <div class="quiz-progress" id="quiz-progress">0 / 0</div>
-                <div class="quiz-question" id="quiz-kanji">問題</div>
-                <div class="quiz-options" id="quiz-options"></div>
-                <div class="quiz-feedback" id="quiz-feedback"></div>
+        <!-- 4. 학습 완료 화면 -->
+        <div id="view-completion" class="view-section" style="display: none;">
+            <div class="completion-box">
+                <div class="completion-icon">🎉</div>
+                <div class="completion-title">この章を完了しました！</div>
+                <div class="completion-desc">クイズに挑戦しますか？<br>それとももう一度復習しますか？</div>
+                <div class="completion-buttons">
+                    <button id="btn-go-quiz" class="btn-action primary">クイズに挑戦</button>
+                    <button id="btn-go-review" class="btn-action secondary">もう一度復習</button>
+                    <button id="btn-go-list-from-comp" class="btn-action outline">一覧へ戻る</button>
+                </div>
             </div>
+        </div>
 
-            <div id="quiz-result-area" style="display: none;">
+        <!-- 5. 퀴즈 진행 화면 -->
+        <div id="view-quiz" class="view-section" style="display: none;">
+            <div class="quiz-progress" id="quiz-progress">0 / 0</div>
+            <div class="quiz-question" id="quiz-kanji">問題</div>
+            <div class="quiz-options" id="quiz-options"></div>
+            <div class="quiz-feedback" id="quiz-feedback"></div>
+        </div>
+
+        <!-- 6. 퀴즈 결과 화면 -->
+        <div id="view-quiz-result" class="view-section" style="display: none;">
+            <div class="completion-box">
                 <div class="result-icon">🏆</div>
                 <div class="result-title">クイズ完了！</div>
                 <div class="result-score" id="quiz-result-score">0 / 0</div>
-                <button id="btn-quiz-restart" class="btn-restart">もう一度挑戦</button>
+                <div class="completion-buttons">
+                    <button id="btn-quiz-restart" class="btn-action primary">もう一度挑戦</button>
+                    <button id="btn-go-list-from-quiz" class="btn-action outline">一覧へ戻る</button>
+                </div>
             </div>
         </div>
     </div>
