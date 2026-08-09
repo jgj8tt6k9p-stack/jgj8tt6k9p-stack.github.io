@@ -1,13 +1,14 @@
 let allWords = []; 
 let chapterWords = []; 
 let currentChunkSize = 20;
+let currentChapterIndex = 0; // 현재 학습 중인 챕터 번호 저장
 
 let studySequence = []; 
 let currentStep = 0;    
 let isRandom = false;
 
-// 암기 상태를 저장할 Set (로컬 스토리지 연동)
-let memorizedSet = new Set();
+// "챕터 단위" 암기 상태를 저장할 Set
+let memorizedChapters = new Set();
 
 let quizSequence = [];
 let quizCurrentIndex = 0;
@@ -15,12 +16,11 @@ let quizCorrectCount = 0;
 
 const views = ['view-home', 'view-chapters', 'view-study', 'view-completion', 'view-quiz', 'view-quiz-result'];
 
-// CSV 로드 및 저장된 암기 데이터 불러오기
 async function loadWords() {
     try {
-        // 암기된 단어 목록 불러오기
-        const savedMemorized = JSON.parse(localStorage.getItem('memorizedWords')) || [];
-        memorizedSet = new Set(savedMemorized);
+        // 저장된 챕터 암기 데이터 불러오기 (예: ["20_0", "100_1"])
+        const savedChapters = JSON.parse(localStorage.getItem('memorizedChapters')) || [];
+        memorizedChapters = new Set(savedChapters);
 
         const response = await fetch('words.csv');
         const text = await response.text();
@@ -70,7 +70,8 @@ document.getElementById('btn-back').addEventListener('click', () => {
     if (activeView === 'view-chapters') {
         showView('view-home');
     } else if (['view-study', 'view-completion', 'view-quiz', 'view-quiz-result'].includes(activeView)) {
-        showView('view-chapters');
+        // 목록으로 돌아갈 때 챕터 목록 화면을 새로고침하여 암기 상태 갱신
+        setupChapters(currentChunkSize);
     }
 });
 
@@ -96,7 +97,16 @@ function setupChapters(chunkSize) {
         
         const btn = document.createElement('button');
         btn.className = 'btn-chapter';
-        btn.textContent = `第${i + 1}章 (${start} ~ ${end})`;
+        
+        // 이 장을 외웠는지 체크 (키 생성 예: "20개씩_0번째챕터" -> "20_0")
+        const chapterKey = `${chunkSize}_${i}`;
+        
+        if (memorizedChapters.has(chapterKey)) {
+            btn.innerHTML = `<span>第${i + 1}章 (${start} ~ ${end})</span> <span style="font-size:22px;">✅</span>`;
+            btn.classList.add('completed');
+        } else {
+            btn.textContent = `第${i + 1}章 (${start} ~ ${end})`;
+        }
         
         btn.onclick = () => startChapter(i);
         listContainer.appendChild(btn);
@@ -110,6 +120,7 @@ function setupChapters(chunkSize) {
    3. 단어장 학습 시작 및 로직
 ============================ */
 function startChapter(chapterIndex) {
+    currentChapterIndex = chapterIndex;
     const start = chapterIndex * currentChunkSize;
     const end = start + currentChunkSize;
     chapterWords = allWords.slice(start, end);
@@ -132,7 +143,6 @@ function startStudySession() {
 function applyDynamicFontSize(element, text, type) {
     const len = text.length;
     let size = '';
-    
     if (type === 'kanji') { 
         if (len <= 4) size = '60px'; else if (len <= 8) size = '48px'; else if (len <= 15) size = '36px'; else if (len <= 25) size = '28px'; else size = '22px';
     } else if (type === 'yomigana') { 
@@ -148,7 +158,6 @@ function updateCard() {
     if (chapterWords.length === 0) return;
     
     document.getElementById('study-progress').textContent = `${currentStep + 1} / ${chapterWords.length}`;
-    
     const wordIndex = studySequence[currentStep];
     const currentWord = chapterWords[wordIndex];
     
@@ -156,40 +165,8 @@ function updateCard() {
     applyDynamicFontSize(document.getElementById('word-yomigana'), currentWord.yomigana, 'yomigana');
     applyDynamicFontSize(document.getElementById('word-meaning'), currentWord.meaning, 'meaning');
 
-    // 암기 상태 체크 후 UI 업데이트
-    const isMemorized = memorizedSet.has(currentWord.kanji);
-    const badges = document.querySelectorAll('.memorized-badge');
-    badges.forEach(b => b.style.display = isMemorized ? 'block' : 'none');
-    
-    const btnMemo = document.getElementById('btn-memorize');
-    if (isMemorized) {
-        btnMemo.classList.add('active');
-        btnMemo.textContent = '✅ 覚えた'; // 외웠다 (완료)
-    } else {
-        btnMemo.classList.remove('active');
-        btnMemo.textContent = '✔ 覚える'; // 외우기 (미완료)
-    }
-
     document.getElementById('card').classList.remove('is-flipped');
 }
-
-// 암기 버튼 클릭 이벤트
-document.getElementById('btn-memorize').addEventListener('click', () => {
-    if (chapterWords.length === 0) return;
-    const currentWord = chapterWords[studySequence[currentStep]];
-    
-    if (memorizedSet.has(currentWord.kanji)) {
-        memorizedSet.delete(currentWord.kanji); // 암기 취소
-    } else {
-        memorizedSet.add(currentWord.kanji); // 암기 등록
-    }
-    
-    // 로컬 스토리지에 배열 형태로 저장
-    localStorage.setItem('memorizedWords', JSON.stringify(Array.from(memorizedSet)));
-    
-    // 버튼 및 뱃지 상태 즉시 갱신
-    updateCard();
-});
 
 document.getElementById('card-container').addEventListener('click', () => {
     document.getElementById('card').classList.toggle('is-flipped');
@@ -198,7 +175,7 @@ document.getElementById('card-container').addEventListener('click', () => {
 document.getElementById('btn-next').addEventListener('click', () => {
     currentStep++;
     if (currentStep >= chapterWords.length) {
-        showView('view-completion');
+        showCompletionScreen(); // 단어를 다 보면 완료 화면으로!
     } else {
         updateCard();
     }
@@ -228,8 +205,41 @@ document.getElementById('btn-rand').addEventListener('click', () => {
 
 
 /* ============================
-   4. 학습 완료 화면 버튼 동작
+   4. 학습 완료 화면 & 챕터 암기 기능
 ============================ */
+function showCompletionScreen() {
+    showView('view-completion');
+    updateMarkChapterButton();
+}
+
+function updateMarkChapterButton() {
+    const btn = document.getElementById('btn-mark-chapter');
+    const chapterKey = `${currentChunkSize}_${currentChapterIndex}`;
+    
+    if (memorizedChapters.has(chapterKey)) {
+        btn.textContent = "✅ 暗記済みに設定中 (取消)"; // 외움 상태 (취소 가능)
+        btn.classList.add('active');
+    } else {
+        btn.textContent = "✔ この章を覚えた"; // 외우기 버튼
+        btn.classList.remove('active');
+    }
+}
+
+// 챕터 암기 버튼 클릭 시 저장/취소
+document.getElementById('btn-mark-chapter').addEventListener('click', () => {
+    const chapterKey = `${currentChunkSize}_${currentChapterIndex}`;
+    
+    if (memorizedChapters.has(chapterKey)) {
+        memorizedChapters.delete(chapterKey);
+    } else {
+        memorizedChapters.add(chapterKey);
+    }
+    
+    localStorage.setItem('memorizedChapters', JSON.stringify(Array.from(memorizedChapters)));
+    updateMarkChapterButton(); // UI 갱신
+});
+
+
 document.getElementById('btn-go-quiz').addEventListener('click', () => {
     if (chapterWords.length < 4) {
         alert("この章の単語が4個未満のため、クイズができません。");
@@ -243,7 +253,7 @@ document.getElementById('btn-go-review').addEventListener('click', () => {
 });
 
 document.getElementById('btn-go-list-from-comp').addEventListener('click', () => {
-    showView('view-chapters');
+    setupChapters(currentChunkSize); // 챕터 목록 갱신 후 화면 전환
 });
 
 
@@ -267,7 +277,6 @@ function generateQuiz() {
 
     const feedback = document.getElementById('quiz-feedback');
     feedback.textContent = ""; 
-    
     document.getElementById('quiz-progress').textContent = `${quizCurrentIndex + 1} / ${quizSequence.length}`;
 
     const correctWord = quizSequence[quizCurrentIndex];
@@ -281,7 +290,6 @@ function generateQuiz() {
             options.push(wrongWord);
         }
     }
-    
     options.sort(() => Math.random() - 0.5);
     
     const optionsContainer = document.getElementById('quiz-options');
@@ -326,7 +334,6 @@ function checkAnswer(clickedBtn, container) {
     setTimeout(generateQuiz, 1500);
 }
 
-
 /* ============================
    6. 퀴즈 결과 화면
 ============================ */
@@ -336,8 +343,9 @@ function showQuizResult() {
 }
 
 document.getElementById('btn-quiz-restart').addEventListener('click', startQuizSession);
-document.getElementById('btn-go-list-from-quiz').addEventListener('click', () => showView('view-chapters'));
-
+document.getElementById('btn-go-list-from-quiz').addEventListener('click', () => {
+    setupChapters(currentChunkSize);
+});
 
 /* ============================
    🌙 테마(다크모드) 제어

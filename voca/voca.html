@@ -52,22 +52,13 @@
             <div class="flashcard" id="card-container">
                 <div class="card" id="card">
                     <div class="card-front">
-                        <!-- 암기 완료 뱃지 -->
-                        <div class="memorized-badge" style="display: none;">✅</div>
                         <div id="word-kanji">読み込み中...</div>
                     </div>
                     <div class="card-back">
-                        <!-- 암기 완료 뱃지 -->
-                        <div class="memorized-badge" style="display: none;">✅</div>
                         <div id="word-yomigana" class="yomigana"></div>
                         <div id="word-meaning" class="meaning"></div>
                     </div>
                 </div>
-            </div>
-
-            <!-- 암기 상태 토글 버튼 -->
-            <div class="action-controls">
-                <button id="btn-memorize" class="btn-memorize">✔ 覚える</button>
             </div>
 
             <div class="nav-controls">
@@ -81,8 +72,11 @@
             <div class="completion-box">
                 <div class="completion-icon">🎉</div>
                 <div class="completion-title">この章を完了しました！</div>
-                <div class="completion-desc">クイズに挑戦しますか？<br>それとももう一度復習しますか？</div>
+                <div class="completion-desc">次に何をしますか？</div>
                 <div class="completion-buttons">
+                    <!-- 챕터 단위 암기 버튼 -->
+                    <button id="btn-mark-chapter" class="btn-action chapter-memo">✔ この章を覚えた</button>
+                    
                     <button id="btn-go-quiz" class="btn-action primary">クイズに挑戦</button>
                     <button id="btn-go-review" class="btn-action secondary">もう一度復習</button>
                     <button id="btn-go-list-from-comp" class="btn-action outline">一覧へ戻る</button>
