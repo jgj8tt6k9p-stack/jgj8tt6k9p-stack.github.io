@@ -12,7 +12,7 @@ let memorizedChapters = new Set();
 let quizSequence = [];
 let quizCurrentIndex = 0;
 let quizCorrectCount = 0;
-let currentQuizType = 'yomi'; // 'yomi' (읽는법 퀴즈) 또는 'imi' (뜻 퀴즈)
+let currentQuizType = 'yomi'; 
 
 const views = ['view-home', 'view-chapters', 'view-study', 'view-completion', 'view-quiz', 'view-quiz-result'];
 
@@ -121,7 +121,6 @@ function startChapter(chapterIndex) {
 
 function startStudySession() {
     studySequence = Array.from({length: chapterWords.length}, (_, i) => i);
-    
     if (isRandom) {
         studySequence.sort(() => Math.random() - 0.5);
     }
@@ -159,6 +158,11 @@ function updateCard() {
     document.getElementById('card').classList.remove('is-flipped');
 }
 
+// 퀴즈로 바로 가기 (스킵)
+document.getElementById('btn-skip-to-quiz').addEventListener('click', () => {
+    showCompletionScreen();
+});
+
 document.getElementById('card-container').addEventListener('click', () => {
     document.getElementById('card').classList.toggle('is-flipped');
 });
@@ -166,7 +170,7 @@ document.getElementById('card-container').addEventListener('click', () => {
 document.getElementById('btn-next').addEventListener('click', () => {
     currentStep++;
     if (currentStep >= chapterWords.length) {
-        showView('view-completion'); // 학습이 끝나면 완료(퀴즈 선택) 화면으로
+        showCompletionScreen(); // 단어를 다 보면 완료 화면으로!
     } else {
         updateCard();
     }
@@ -196,6 +200,10 @@ document.getElementById('btn-rand').addEventListener('click', () => {
 /* ============================
    4. 학습 완료 화면 (퀴즈 종류 선택)
 ============================ */
+function showCompletionScreen() {
+    showView('view-completion');
+}
+
 document.getElementById('btn-go-quiz-yomi').addEventListener('click', () => {
     if (chapterWords.length < 4) { alert("単語が4個未満のため、クイズができません。"); return; }
     currentQuizType = 'yomi';
@@ -242,7 +250,6 @@ function generateQuiz() {
     const correctWord = quizSequence[quizCurrentIndex];
     applyDynamicFontSize(document.getElementById('quiz-kanji'), correctWord.kanji, 'kanji');
     
-    // 퀴즈 타입에 따라 문제에 표시할 힌트 변경
     const hintElement = document.getElementById('quiz-hint');
     if (currentQuizType === 'yomi') {
         hintElement.textContent = `[ ${correctWord.meaning} ]`;
@@ -267,7 +274,6 @@ function generateQuiz() {
         const btn = document.createElement('button');
         btn.className = 'quiz-option';
         
-        // 퀴즈 타입에 따라 보기에 표시할 텍스트 변경
         let optText = "";
         if (currentQuizType === 'yomi') {
             optText = opt.yomigana;
@@ -316,8 +322,6 @@ function checkAnswer(clickedBtn, container) {
 function showQuizResult() {
     showView('view-quiz-result');
     document.getElementById('quiz-result-score').textContent = `${quizCorrectCount} / ${quizSequence.length}`;
-    
-    // 퀴즈 결과 화면에서 암기 버튼 상태 갱신
     updateMarkChapterButton();
 }
 
@@ -334,7 +338,6 @@ function updateMarkChapterButton() {
     }
 }
 
-// 퀴즈 결과 화면의 암기 버튼 클릭 시 처리
 document.getElementById('btn-mark-chapter').addEventListener('click', () => {
     const chapterKey = `${currentChunkSize}_${currentChapterIndex}`;
     
@@ -345,7 +348,7 @@ document.getElementById('btn-mark-chapter').addEventListener('click', () => {
     }
     
     localStorage.setItem('memorizedChapters', JSON.stringify(Array.from(memorizedChapters)));
-    updateMarkChapterButton(); // UI 갱신
+    updateMarkChapterButton(); 
 });
 
 
