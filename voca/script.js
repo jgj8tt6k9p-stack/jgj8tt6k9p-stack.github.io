@@ -73,7 +73,9 @@ document.getElementById('btn-back').addEventListener('click', () => {
 /* ============================
    1. 단위 선택 & 2. 챕터 목록 생성
 ============================ */
+// 50개 버튼 동작 추가
 document.getElementById('btn-chunk-20').addEventListener('click', () => setupChapters(20));
+document.getElementById('btn-chunk-50').addEventListener('click', () => setupChapters(50));
 document.getElementById('btn-chunk-100').addEventListener('click', () => setupChapters(100));
 
 function setupChapters(chunkSize) {
@@ -249,7 +251,6 @@ function generateQuiz() {
     const correctWord = quizSequence[quizCurrentIndex];
     applyDynamicFontSize(document.getElementById('quiz-kanji'), correctWord.kanji, 'kanji');
     
-    // === 퀴즈 힌트 가리기 & 클릭 시 보여주기 ===
     const hintElement = document.getElementById('quiz-hint');
     hintElement.classList.add('clickable');
     hintElement.dataset.isHidden = "true";
@@ -297,12 +298,11 @@ function generateQuiz() {
     });
 }
 
-// 힌트 요소 클릭 이벤트 (숨겨진 텍스트 표시)
 document.getElementById('quiz-hint').addEventListener('click', function() {
     if (this.dataset.isHidden === "true") {
         this.textContent = this.dataset.hintText;
         this.dataset.isHidden = "false";
-        this.classList.remove('clickable'); // 클릭 가능한 UI 제거
+        this.classList.remove('clickable'); 
     }
 });
 
