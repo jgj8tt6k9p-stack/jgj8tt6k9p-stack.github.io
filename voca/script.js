@@ -158,7 +158,6 @@ function updateCard() {
     document.getElementById('card').classList.remove('is-flipped');
 }
 
-// 퀴즈로 바로 가기 (스킵)
 document.getElementById('btn-skip-to-quiz').addEventListener('click', () => {
     showCompletionScreen();
 });
@@ -170,7 +169,7 @@ document.getElementById('card-container').addEventListener('click', () => {
 document.getElementById('btn-next').addEventListener('click', () => {
     currentStep++;
     if (currentStep >= chapterWords.length) {
-        showCompletionScreen(); // 단어를 다 보면 완료 화면으로!
+        showCompletionScreen(); 
     } else {
         updateCard();
     }
@@ -250,11 +249,17 @@ function generateQuiz() {
     const correctWord = quizSequence[quizCurrentIndex];
     applyDynamicFontSize(document.getElementById('quiz-kanji'), correctWord.kanji, 'kanji');
     
+    // === 퀴즈 힌트 가리기 & 클릭 시 보여주기 ===
     const hintElement = document.getElementById('quiz-hint');
+    hintElement.classList.add('clickable');
+    hintElement.dataset.isHidden = "true";
+    
     if (currentQuizType === 'yomi') {
-        hintElement.textContent = `[ ${correctWord.meaning} ]`;
+        hintElement.textContent = "💡 意味を見る";
+        hintElement.dataset.hintText = `[ ${correctWord.meaning} ]`;
     } else {
-        hintElement.textContent = `[ ${correctWord.yomigana} ]`;
+        hintElement.textContent = "💡 読み方を見る";
+        hintElement.dataset.hintText = `[ ${correctWord.yomigana} ]`;
     }
     
     let options = [correctWord];
@@ -291,6 +296,15 @@ function generateQuiz() {
         optionsContainer.appendChild(btn);
     });
 }
+
+// 힌트 요소 클릭 이벤트 (숨겨진 텍스트 표시)
+document.getElementById('quiz-hint').addEventListener('click', function() {
+    if (this.dataset.isHidden === "true") {
+        this.textContent = this.dataset.hintText;
+        this.dataset.isHidden = "false";
+        this.classList.remove('clickable'); // 클릭 가능한 UI 제거
+    }
+});
 
 function checkAnswer(clickedBtn, container) {
     const allBtns = container.querySelectorAll('.quiz-option');
