@@ -148,6 +148,10 @@
             border-radius: 8px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             border: 2px solid var(--border-color);
+            /* 투명 이미지 방어 로직: 옅은 배경색 및 내부 여백 추가 */
+            background-color: #f1f5f9; 
+            padding: 1.5rem;
+            box-sizing: border-box;
         }
 
         .close-modal {
@@ -732,7 +736,7 @@
                         </tr>
                         <tr>
                             <th>성과 및 의의</th>
-                            <td>기존 2개 층 점검에 2시간이 소요되던 업무를 9개 층 점검에 3시간으로 획기적으로 단축했습니다. 이는 <span class="highlight-text">소요 시간 67% 감소, 업무 효율성 300% (3배) 증가</span>에 해당하는 엄청난 성과이며, 수작업 시 발생하던 파일명 오류 등 휴먼 에러를 원천 차단했습니다.</td>
+                            <td>기존 2개 층 점검에 2시간이 소요되던 업무를 9개 층 점검에 3시간으로 획기적으로 단축했습니다. 이는 <span class="highlight 단축 text">소요 시간 67% 감소, 업무 효율성 300% (3배) 증가</span>에 해당하는 엄청난 성과이며, 수작업 시 발생하던 파일명 오류 등 휴먼 에러를 원천 차단했습니다.</td>
                         </tr>
                     </table>
                 </div>
@@ -1021,7 +1025,7 @@
             </div>
         </div>
 
-        <!-- NEW SLIDE ADDED: Best Practice 7 -->
+        <!-- Best Practice 7 -->
         <div class="slide">
             <div class="lang-ja">
                 <h2>Best Practice 7: セキュリティエージェント自動配布システム(PMS)構築</h2>
@@ -1119,7 +1123,6 @@
         const errorMsg = document.getElementById('errorMsg');
 
         function checkPassword() {
-            // Password based on strict prompt instruction
             if (pwdInput.value === 'password') {
                 loginOverlay.style.opacity = '0';
                 setTimeout(() => {
