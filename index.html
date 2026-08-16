@@ -82,7 +82,7 @@
             margin-bottom: 1.5rem;
             justify-content: center;
         }
-        .login-box h2::before { content: none; } 
+        .login-box h2::before { content: none; }
 
         .login-box input {
             width: 100%;
@@ -118,6 +118,72 @@
             margin-bottom: 1rem;
             display: none;
             font-weight: bold;
+        }
+
+        /* --- Image Modal Styles --- */
+        #image-modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        #image-modal.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        #modal-img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 2px solid var(--border-color);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            color: #f8fafc;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close-modal:hover {
+            color: var(--accent-color);
+        }
+
+        .view-details-btn {
+            background-color: transparent;
+            color: var(--accent-color);
+            border: 1px solid var(--accent-color);
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .view-details-btn:hover {
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+            box-shadow: 0 4px 10px rgba(56, 189, 248, 0.3);
         }
 
         /* --- Slider Styles --- */
@@ -261,7 +327,7 @@
             border: 1px solid var(--border-color);
             padding: 1.2rem 1.5rem;
             text-align: left;
-            vertical-align: top;
+            vertical-align: middle;
         }
 
         th {
@@ -388,6 +454,7 @@
 </head>
 <body class="lang-ja">
     
+    <!-- Login Overlay -->
     <div id="login-overlay">
         <div class="login-box">
             <h2>Portfolio Access</h2>
@@ -400,6 +467,12 @@
                 (보안 업계에서 가장 많이 쓰이는 패스워드)
             </div>
         </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="image-modal">
+        <span class="close-modal">&times;</span>
+        <img id="modal-img" src="" alt="Architecture Flowchart">
     </div>
 
     <div class="progress-bar" id="progressBar"></div>
@@ -415,7 +488,7 @@
                 <div style="margin-top: 3rem; color: #94a3b8;">
                     <p>1. 自己紹介・経歴概要</p>
                     <p>2. 主要プロジェクト履歴</p>
-                    <p>3. Best Practice (6件)</p>
+                    <p>3. Best Practice (7件)</p>
                 </div>
                 <p style="margin-top: 4rem; font-style: italic; font-size: 0.9rem;">※ 画面スワイプ、または下のボタンで移動</p>
             </div>
@@ -425,7 +498,7 @@
                 <div style="margin-top: 3rem; color: #94a3b8;">
                     <p>1. 자기소개 및 경력 요약</p>
                     <p>2. 주요 프로젝트 이력</p>
-                    <p>3. Best Practice (6건)</p>
+                    <p>3. Best Practice (7건)</p>
                 </div>
                 <p style="margin-top: 4rem; font-style: italic; font-size: 0.9rem;">※ 화면을 스와이프하거나 하단 버튼으로 이동하세요.</p>
             </div>
@@ -528,6 +601,7 @@
             </div>
         </div>
 
+        <!-- Best Practice 1 -->
         <div class="slide">
             <div class="lang-ja">
                 <h2>Best Practice 1: クラウド資産管理システムの自社構築</h2>
@@ -601,6 +675,7 @@
             </div>
         </div>
 
+        <!-- Best Practice 2 -->
         <div class="slide">
             <div class="lang-ja">
                 <h2>Best Practice 2: オフィスセキュリティ点検システムの開発</h2>
@@ -664,10 +739,11 @@
             </div>
         </div>
 
+        <!-- Best Practice 3 -->
         <div class="slide">
             <div class="lang-ja">
                 <h2>Best Practice 3: 統合セキュリティプラットフォーム(XDR)構築・高度化</h2>
-                <p>SSL可視化ソリューションによる暗号化トラフィックの復号化と、各種セキュリティアプライアンスへのミラーリング構成により、全社的な監視体制を強化しました。</p>
+                <p>SSL可視化ソリューションによる暗号化トラフィックの復号化と、各種セキュリティアプライアンスへのミラーリング構成により、監視体制を強化しました。</p>
                 <div class="card">
                     <table>
                         <tr>
@@ -675,26 +751,26 @@
                             <td>サイバー攻撃の高度化およびトラフィックの暗号化(HTTPS)が進む中、既存のファイアウォールやIPSだけでは脅威の可視化と包括的な分析が困難になっていました。</td>
                         </tr>
                         <tr>
-                            <th>技術的詳細と<br>アーキテクチャ</th>
-                            <td>
-                                <ul>
-                                    <li>インターネット接続トラフィックをSSL可視化機器(SWG+SSLVA)でPlain-textに復号化。</li>
-                                    <li>復号化されたミラートラフィックをAPT NXやDLPに並行して転送する高度なネットワーク設計を導入。</li>
-                                </ul>
-                            </td>
-                        </tr>
-                        <tr>
                             <th>主な取り組み</th>
                             <td>
                                 <ul>
-                                    <li>老朽化したセキュリティ機器(FW, IPS)のシームレスなリプレイスを遂行。</li>
-                                    <li>ネットワーク機器、エンドポイントから発生するシステムログと検知イベントを統合収集し、XDRプラットフォームに連動させるパイプラインを構築。</li>
+                                    <li>インターネット接続トラフィックをSSL可視化機器(SWG+SSLVA)で復号化。</li>
+                                    <li>復号化されたミラートラフィックをAPT NXやDLPに並行して転送する高度なネットワーク設計を導入。</li>
+                                    <li>イベントを統合収集し、XDRプラットフォームに連動させるパイプラインを構築。</li>
                                 </ul>
                             </td>
                         </tr>
                         <tr>
                             <th>成果と意義</th>
-                            <td>サイロ化していた各種セキュリティログをXDR上で単一のEvent Streamとして相関分析することが可能となり、<span class="highlight-text">脅威の早期発見とリアルタイム警報システムの確立</span>によるインシデント対応速度の飛躍的な向上を実現しました。</td>
+                            <td>サイロ化していた各種セキュリティログを相関分析することが可能となり、<span class="highlight-text">脅威の早期発見とリアルタイム警報システムの確立</span>によるインシデント対応速度の向上を実現しました。</td>
+                        </tr>
+                        <tr>
+                            <th>構成・フロー</th>
+                            <td>
+                                <button class="view-details-btn" onclick="openModal('bp3_architecture.jpg')">
+                                    🔍 詳細を見る
+                                </button>
+                            </td>
                         </tr>
                     </table>
                 </div>
@@ -709,250 +785,306 @@
                             <td>사이버 위협이 고도화되고 웹 트래픽의 대다수가 암호화(HTTPS)됨에 따라, 노후화된 기존 방화벽과 IPS만으로는 내부로 유입되는 악성 행위에 대한 가시성 확보와 통합 분석이 불가능했습니다.</td>
                         </tr>
                         <tr>
-                            <th>아키텍처 및<br>기술적 상세</th>
-                            <td>
-                                <ul>
-                                    <li>사용자의 인터넷 접속 트래픽을 SSL 가시성 솔루션(SWG+SSLVA)을 거쳐 Plain-text로 복호화하도록 네트워크 구성.</li>
-                                    <li>복호화된 미러 트래픽을 APT NX와 DLP로 동시 전송하여 탐지율을 극대화하는 아키텍처 설계 및 구축.</li>
-                                </ul>
-                            </td>
-                        </tr>
-                        <tr>
                             <th>주요 수행 내역</th>
                             <td>
                                 <ul>
-                                    <li>노후화된 방화벽, IPS의 교체 및 정책 최적화 프로젝트 리딩.</li>
-                                    <li>네트워크 시스템, DB, 단말에서 발생하는 방대한 이벤트 및 로그를 XDR 플랫폼으로 연동 및 파싱하는 데이터 파이프라인 구축.</li>
+                                    <li>사용자의 트래픽을 SSL 가시성 솔루션(SWG+SSLVA)을 거쳐 복호화하도록 네트워크 구성.</li>
+                                    <li>복호화된 트래픽을 APT NX와 DLP로 동시 전송하여 탐지율 극대화 아키텍처 설계.</li>
+                                    <li>방대한 이벤트 및 로그를 XDR 플랫폼으로 연동 및 파싱하는 데이터 파이프라인 구축.</li>
                                 </ul>
                             </td>
                         </tr>
                         <tr>
                             <th>성과 및 의의</th>
-                            <td>파편화되어 있던 보안 이벤트를 XDR을 통해 통합 분석함으로써 <span class="highlight-text">실시간 경보 발령 및 선제적 침해 위협 대응</span>이 가능해졌으며, 정보 보안 부서의 전반적인 업무 효율성과 가시성이 크게 향상되었습니다.</td>
+                            <td>파편화되어 있던 보안 이벤트를 XDR을 통해 통합 분석함으로써 <span class="highlight-text">실시간 경보 발령 및 선제적 침해 위협 대응</span>이 가능해졌으며, 업무 효율성과 가시성이 향상되었습니다.</td>
+                        </tr>
+                        <tr>
+                            <th>구성 및 흐름</th>
+                            <td>
+                                <button class="view-details-btn" onclick="openModal('bp3_architecture.jpg')">
+                                    🔍 상세보기
+                                </button>
+                            </td>
                         </tr>
                     </table>
                 </div>
             </div>
         </div>
 
+        <!-- Best Practice 4 -->
         <div class="slide">
             <div class="lang-ja">
                 <h2>Best Practice 4: 網分離環境におけるコラボレーションツール接続統制</h2>
-                <p>オープンソース(SQUID)を活用したプロキシを新規構築し、HTTPヘッダ識別を利用した高度なアクセス制御により網分離環境のセキュリティを強化しました。</p>
+                <p>オープンソースを活用したプロキシを構築し、高度なアクセス制御により網分離環境のセキュリティを強化しました。</p>
                 <div class="card">
                     <table>
                         <tr>
                             <th>課題・背景</th>
-                            <td>網分離環境において特定グループウェアへのアクセスを許可する必要がありましたが、個人の私的アカウントでのログインを防ぎ、情報流出リスクを遮断する技術的制御が求められていました。</td>
-                        </tr>
-                        <tr>
-                            <th>技術的詳細</th>
-                            <td>
-                                <ul>
-                                    <li><strong>OS/App:</strong> Redhat Enterprise 8.9 / Squid Cache 4.15</li>
-                                    <li><strong>制御ロジック:</strong> アクセス先URLと、企業ドメイン情報を含むHTTPヘッダ(AUTH等)の「AND条件」をProxyルールセットとして実装。</li>
-                                </ul>
-                            </td>
+                            <td>網分離環境において特定グループウェアへのアクセスを許可しつつ、個人の私的アカウントでのログインを防ぎ、情報流出リスクを遮断する技術的制御が求められていました。</td>
                         </tr>
                         <tr>
                             <th>主な取り組み</th>
                             <td>
                                 <ul>
-                                    <li>網分離区間にプロキシサーバーをゼロから単独で構築(寄与度100%)。</li>
+                                    <li><strong>制御ロジック:</strong> アクセス先URLと企業ドメイン情報を含むHTTPヘッダ(AUTH等)の「AND条件」をSquid Proxyルールとして実装。</li>
                                     <li>既存ルールのマイグレーション、SSL証明書検証機能の適用、WebSocket通信のバイパス処理などを実施。</li>
                                 </ul>
                             </td>
                         </tr>
                         <tr>
                             <th>成果と意義</th>
-                            <td>特定の企業アカウントのみログインを許可し、個人アカウントを完全に統制する環境を<span class="highlight-text">当該ソリューションメーカー初の事例として成功</span>させました。これにより利便性を損なうことなく網分離環境からの情報流出の抜け穴を完全に塞ぎました。</td>
+                            <td>企業アカウントのみログインを許可し、個人アカウントを完全に統制する環境を<span class="highlight-text">ソリューションメーカー初の事例として成功</span>させ、網分離からの情報流出の抜け穴を塞ぎました。</td>
+                        </tr>
+                        <tr>
+                            <th>構成・フロー</th>
+                            <td>
+                                <button class="view-details-btn" onclick="openModal('bp4_architecture.jpg')">
+                                    🔍 詳細を見る
+                                </button>
+                            </td>
                         </tr>
                     </table>
                 </div>
             </div>
             <div class="lang-ko">
                 <h2>Best Practice 4: 망분리 환경 업무협업도구 개인계정 접속 통제</h2>
-                <p>오픈소스(SQUID) 프록시를 신규 구축하고, 기업 도메인 식별 헤더를 활용한 고도화된 접근 제어를 통해 망분리 환경의 보안을 강화했습니다.</p>
+                <p>오픈소스 프록시를 신규 구축하고, 기업 도메인 식별 헤더를 활용한 고도화된 접근 제어를 통해 망분리 환경의 보안을 강화했습니다.</p>
                 <div class="card">
                     <table>
                         <tr>
                             <th>도입 배경</th>
-                            <td>인터넷이 차단된 망분리 환경에서 업무용 협업도구의 통신은 허용해야 했으나, 직원이 개인 계정으로 접속하여 회사 기밀 자료를 유출하는 행위를 차단할 기술적 통제 방안이 필수적이었습니다.</td>
-                        </tr>
-                        <tr>
-                            <th>기술적 상세</th>
-                            <td>
-                                <ul>
-                                    <li><strong>환경:</strong> Redhat Enterprise 8.9 / Squid Cache 4.15</li>
-                                    <li><strong>제어 로직:</strong> 목적지 URL과 기업 도메인을 식별할 수 있는 HTTP Header (AUTH 등)의 'AND 조건'을 프록시 룰셋으로 정교하게 구현.</li>
-                                </ul>
-                            </td>
+                            <td>인터넷이 차단된 망분리 환경에서 협업도구 통신은 허용하되, 직원이 개인 계정으로 접속하여 기밀을 유출하는 행위를 차단할 기술적 통제 방안이 필수적이었습니다.</td>
                         </tr>
                         <tr>
                             <th>주요 수행 내역</th>
                             <td>
                                 <ul>
-                                    <li>망분리 구간 내 프록시 서버 단독 신규 구축 (프로젝트 기여도 100%).</li>
+                                    <li><strong>제어 로직:</strong> 목적지 URL과 기업 도메인 식별 HTTP Header(AUTH 등)의 'AND 조건'을 Squid 프록시 룰셋으로 구현.</li>
                                     <li>SSL 인증서 검증(Trusted Root) 적용 및 WebSocket 기능 우회 방안 마련 및 테스트 수행.</li>
                                 </ul>
                             </td>
                         </tr>
                         <tr>
                             <th>성과 및 의의</th>
-                            <td>오픈소스를 활용하여 개인 계정 로그인을 통제하는 환경을 <span class="highlight-text">제조사(솔루션 벤더) 최초 사례로 성공적으로 구축</span>했습니다. 고도화된 기술적 통제를 통해 망분리 환경의 정보 유출 사고 위험을 근본적으로 제거했습니다.</td>
+                            <td>오픈소스를 활용하여 개인 계정 로그인을 통제하는 환경을 <span class="highlight-text">제조사(솔루션 벤더) 최초 사례로 성공적으로 구축</span>하여, 유출 사고 위험을 근본적으로 제거했습니다.</td>
+                        </tr>
+                        <tr>
+                            <th>구성 및 흐름</th>
+                            <td>
+                                <button class="view-details-btn" onclick="openModal('bp4_architecture.jpg')">
+                                    🔍 상세보기
+                                </button>
+                            </td>
                         </tr>
                     </table>
                 </div>
             </div>
         </div>
 
+        <!-- Best Practice 5 -->
         <div class="slide">
             <div class="lang-ja">
                 <h2>Best Practice 5: Webシェル攻撃による侵害インシデント(IR)対応</h2>
-                <p>脆弱性を突いたシステムへの侵入およびラテラルムーブメント(水平展開)攻撃を発見し、迅速な封じ込めから復旧・再発防止策までを主導しました。</p>
+                <p>脆弱性を突いた侵入およびラテラルムーブメント(水平展開)攻撃を発見し、迅速な封じ込めから再発防止策までを主導しました。</p>
                 <div class="card">
                     <table>
                         <tr>
                             <th>インシデント概要</th>
-                            <td>
-                                <ul>
-                                    <li><strong>発生時期:</strong> 2022年3月〜4月 (分析対象: サーバー10台, PC2台)</li>
-                                    <li>SmartEditor 2.1.2およびAtlassian Confluenceの脆弱性を悪用され、Webシェルおよび悪性ファイルがアップロードされた。</li>
-                                </ul>
-                            </td>
+                            <td>SmartEditorおよびConfluenceの脆弱性を悪用され、内部サーバーへWebシェル等がアップロードされる攻撃が発生。(分析対象: サーバー10台, PC2台)</td>
                         </tr>
                         <tr>
-                            <th>対応プロセス 1<br>(検知・初期対応)</th>
+                            <th>主な取り組み</th>
                             <td>
                                 <ul>
-                                    <li><strong>検知:</strong> Host IPSモニタリング中、内部IPセグメントに向けた不審なWebスキャン行為をいち早く検知。</li>
-                                    <li><strong>封じ込め:</strong> 被害の拡散を防ぐため、即座に感染が疑われるPCおよびサーバーのネットワークを隔離措置。</li>
-                                </ul>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>対応プロセス 2<br>(調査・復旧・強化)</th>
-                            <td>
-                                <ul>
-                                    <li><strong>調査分析:</strong> 不審なプロセス調査とフォレンジック分析を実施し、C2サーバー(ロシア)との通信事実を特定。</li>
-                                    <li><strong>復旧・再発防止:</strong> 開発者のシステムアクセス統制ポリシーを見直し、全システムのパスワード強制変更および認証強化を実施。</li>
+                                    <li><strong>検知・封じ込め:</strong> Host IPSで内部IPへの不審なスキャン行為を検知し、感染疑いのPC・サーバーを即時ネットワーク隔離。</li>
+                                    <li><strong>分析・強化:</strong> フォレンジックによりC2サーバーとの通信を特定。全システムのパスワード強制変更とアクセス統制強化を実施。</li>
                                 </ul>
                             </td>
                         </tr>
                         <tr>
                             <th>成果と意義</th>
-                            <td>巧妙なラテラルムーブメント攻撃を初期段階で遮断し、<span class="highlight-text">顧客データ等の致命的な情報流出を未然に防ぐ</span>ことに成功しました。社内のインシデント対応マニュアルをアップデートし組織のレジリエンスを向上させました。</td>
+                            <td>巧妙なラテラルムーブメント攻撃を初期段階で遮断し、<span class="highlight-text">顧客データ等の致命的な情報流出を未然に防ぐ</span>ことに成功しました。</td>
+                        </tr>
+                        <tr>
+                            <th>構成・フロー</th>
+                            <td>
+                                <button class="view-details-btn" onclick="openModal('bp5_architecture.jpg')">
+                                    🔍 詳細を見る
+                                </button>
+                            </td>
                         </tr>
                     </table>
                 </div>
             </div>
             <div class="lang-ko">
                 <h2>Best Practice 5: 웹쉘 공격 침해 사고 대응 (Incident Response)</h2>
-                <p>알려진 취약점을 통한 시스템 침투 및 측면 이동(Lateral Movement) 공격을 조기에 발견하고, 즉각적인 격리부터 포렌식 분석, 보안 강화까지 전 과정을 수행했습니다.</p>
+                <p>알려진 취약점을 통한 시스템 침투 및 측면 이동(Lateral Movement) 공격을 조기에 발견하고, 즉각적인 격리부터 보안 강화까지 수행했습니다.</p>
                 <div class="card">
                     <table>
                         <tr>
                             <th>인시던트 개요</th>
-                            <td>
-                                <ul>
-                                    <li><strong>대응 기간:</strong> 2022년 3월 ~ 4월 (분석 대상: 서버 10대, 개인PC 2대)</li>
-                                    <li>SmartEditor 및 Atlassian Confluence 취약점을 악용하여 악성 웹쉘 4종 및 악성 파일 7종이 업로드됨.</li>
-                                </ul>
-                            </td>
+                            <td>SmartEditor 및 Confluence 취약점을 악용하여, 내부 서버에 악성 웹쉘 및 파일이 다수 업로드되는 침해 사고 발생. (분석 대상: 서버 10대, PC 2대)</td>
                         </tr>
                         <tr>
-                            <th>대응 프로세스 1<br>(탐지 및 초기 대응)</th>
+                            <th>주요 수행 내역</th>
                             <td>
                                 <ul>
-                                    <li><strong>탐지:</strong> Host IPS 모니터링 중 내부 대역 IP로 향하는 웹 스캐닝 행위 등 비정상적인 특이 이벤트를 최초 발견.</li>
-                                    <li><strong>격리:</strong> 감염이 의심되는 PC 및 주요 서버의 네트워크를 즉각적으로 차단 및 격리 조치하여 피해 확산 차단.</li>
-                                </ul>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>대응 프로세스 2<br>(분석, 복구 및 강화)</th>
-                            <td>
-                                <ul>
-                                    <li><strong>조사 분석:</strong> 포렌식 분석을 의뢰하여 C2 서버(러시아)와의 악성 통신 유발 시스템 식별.</li>
-                                    <li><strong>복구 및 강화:</strong> 내부 개발자의 시스템 접근 통제를 대폭 강화. 전체 시스템 패스워드 일괄 변경 및 보안 정책 재정립.</li>
+                                    <li><strong>탐지 및 격리:</strong> Host IPS 모니터링 중 비정상 스캐닝 행위를 최초 발견, 즉각적인 주요 서버 네트워크 차단 및 격리 조치.</li>
+                                    <li><strong>분석 및 복구:</strong> 포렌식 분석을 통해 C2 서버 식별. 내부 개발자의 접근 통제 강화 및 전사 패스워드 일괄 변경 등 정책 재정립.</li>
                                 </ul>
                             </td>
                         </tr>
                         <tr>
                             <th>성과 및 의의</th>
-                            <td>치명적일 수 있었던 내부망 침투 공격을 조기에 차단하여 <span class="highlight-text">실질적인 데이터 유출 피해를 완벽히 방어</span>했습니다. 실전적인 침해 대응 역량을 증명하였으며, 사후 접근 체계 고도화를 이끌어냈습니다.</td>
+                            <td>치명적일 수 있었던 내부망 침투 공격을 조기에 차단하여 <span class="highlight-text">실질적인 데이터 유출 피해를 완벽히 방어</span>했습니다.</td>
+                        </tr>
+                        <tr>
+                            <th>구성 및 흐름</th>
+                            <td>
+                                <button class="view-details-btn" onclick="openModal('bp5_architecture.jpg')">
+                                    🔍 상세보기
+                                </button>
+                            </td>
                         </tr>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- NEW SLIDE ADDED: Best Practice 6 -->
+        <!-- Best Practice 6 -->
         <div class="slide">
             <div class="lang-ja">
                 <h2>Best Practice 6: SBOMおよび脆弱性管理の自動化パイプライン構築</h2>
-                <p>既存のクラウド資産管理システムにソフトウェア資産管理（SBOM）モジュールを追加開発し、脆弱性管理のライフサイクルを自動化しました。</p>
+                <p>既存のクラウド資産管理システムにSBOMモジュールを追加開発し、脆弱性管理のライフサイクルを自動化しました。</p>
                 <div class="card">
                     <table>
                         <tr>
                             <th>課題・背景</th>
-                            <td>新規のCVE脆弱性が発生するたびに、対象となるOSパッケージやソフトウェア（npm, pip等）のバージョン情報を特定するため、全てのサーバーへ手動でSSH接続しスクリプトを実行して結果を抽出するという、極めて非効率的な手作業が存在していました。</td>
-                        </tr>
-                        <tr>
-                            <th>技術的詳細</th>
-                            <td>
-                                <ul>
-                                    <li><strong>開発・環境:</strong> Python Flask, Shell Script, API通信</li>
-                                    <li>バックエンドから中継サーバーと連携し、物理・仮想サーバーへスクリプトを自動展開してソフトウェアのインストール状況（SBOM）を収集するパイプラインを構築しました。</li>
-                                </ul>
-                            </td>
+                            <td>新規のCVE脆弱性発生時、全サーバーへ手動でSSH接続しパッケージ情報を抽出するという、極めて非効率的な手作業プロセスが存在していました。</td>
                         </tr>
                         <tr>
                             <th>主な取り組み</th>
                             <td>
                                 <ul>
-                                    <li>収集したソフトウェアおよびバージョン情報を基に、チームメンバーが開発した分析ツールのAPIエンドポイントと連携し、CVE脆弱性の影響範囲をリアルタイムで自動分析する仕組みを実装しました。</li>
-                                    <li>影響範囲内の脆弱なサーバーに対し、業務コラボレーションツールへ対応タスクを自動登録するよう連動させました。</li>
+                                    <li>Python FlaskとShell Scriptを利用し、中継サーバー経由で対象サーバーへスクリプトを自動展開・情報収集(SBOM)する機能を実装。</li>
+                                    <li>収集したバージョン情報を分析ツールとAPI連携し、CVEの影響範囲を自動分析・業務ツールへタスクとして自動登録する仕組みを構築。</li>
                                 </ul>
                             </td>
                         </tr>
                         <tr>
                             <th>成果と意義</th>
-                            <td>数十〜数百台に及ぶサーバーへの手動SSH接続および点検プロセスを完全に排除し、<span class="highlight-text">脆弱性点検の業務効率を極限まで向上</span>させました。また、全サーバー資産に潜むソフトウェア・リスクの<span class="highlight-text">完全な可視性（Visibility）を確保</span>し、迅速なインシデント予防体制を確立しました。</td>
+                            <td>数百台に及ぶサーバーへの手動点検プロセスを完全に排除し、脆弱性点検の<span class="highlight-text">業務効率を極限まで向上</span>させると共に、リスクの完全な可視化を実現しました。</td>
+                        </tr>
+                        <tr>
+                            <th>構成・フロー</th>
+                            <td>
+                                <button class="view-details-btn" onclick="openModal('bp6_architecture.jpg')">
+                                    🔍 詳細を見る
+                                </button>
+                            </td>
                         </tr>
                     </table>
                 </div>
             </div>
             <div class="lang-ko">
                 <h2>Best Practice 6: SBOM 및 취약점 관리 자동화 파이프라인 구축</h2>
-                <p>기존 클라우드 자산 관리 시스템에 소프트웨어 자산 관리(SBOM) 모듈을 추가 개발하여, 취약점 식별부터 대응까지의 라이프사이클을 전면 자동화했습니다.</p>
+                <p>기존 클라우드 자산 관리 시스템에 소프트웨어 자산 관리(SBOM) 모듈을 추가 개발하여, 취약점 점검 자동화 파이프라인을 구축했습니다.</p>
                 <div class="card">
                     <table>
                         <tr>
                             <th>도입 배경</th>
-                            <td>신규 CVE 취약점 발생 시 대상이 되는 OS 패키지 및 소프트웨어(npm, pip 등)의 버전 정보를 파악하기 위해, 모든 서버에 일일이 다회차 SSH 접속을 거쳐 스크립트를 실행하고 결과를 추출해야 하는 극히 비효율적인 수동 점검 프로세스가 존재했습니다.</td>
-                        </tr>
-                        <tr>
-                            <th>기술적 상세</th>
-                            <td>
-                                <ul>
-                                    <li><strong>개발 환경:</strong> Python Flask, Shell Script, API 통신</li>
-                                    <li>백엔드 단에서 중계 서버와 연동하여 물리 및 가상 서버에 스크립트를 자동 배포하고, 소프트웨어 설치 현황(SBOM) 데이터를 수집하는 파이프라인을 구축했습니다.</li>
-                                </ul>
-                            </td>
+                            <td>신규 CVE 발생 시, 전체 서버에 일일이 다회차 SSH 접속을 거쳐 스크립트를 실행하고 OS 패키지 버전 정보를 추출해야 하는 비효율적인 수동 점검 절차가 존재했습니다.</td>
                         </tr>
                         <tr>
                             <th>주요 수행 내역</th>
                             <td>
                                 <ul>
-                                    <li>수집된 소프트웨어 및 버전 데이터를 팀원이 구축한 분석 툴의 API 엔드포인트와 연동하여, 신규 CVE 취약점의 영향 범위를 실시간으로 자동 분석하도록 구성했습니다.</li>
-                                    <li>영향 범위 내로 식별된 취약 서버에 대해서는 사내 업무 협업 툴의 취약점 조치 태스크(Task)로 자동 등록되도록 연계했습니다.</li>
+                                    <li>Python Flask와 Shell Script를 활용해 중계 서버와 연동, 대상 서버에 스크립트를 자동 배포하여 소프트웨어 현황(SBOM)을 수집하도록 구현.</li>
+                                    <li>수집 데이터를 분석 툴 API와 연동하여 CVE 영향 범위를 실시간 자동 분석하고, 취약 서버 조치 태스크를 업무 툴에 자동 등록하도록 연계.</li>
                                 </ul>
                             </td>
                         </tr>
                         <tr>
                             <th>성과 및 의의</th>
-                            <td>수십~수백 대의 서버에 대한 수동 SSH 접속 및 스크립트 실행 과정을 완벽히 제거하여 <span class="highlight-text">취약점 점검 업무 효율성을 극대화</span>했습니다. 또한 전체 서버 자산의 소프트웨어 리스크에 대한 실시간 <span class="highlight-text">가시성(Visibility)을 확보</span>하여 신속한 침해 예방 체계를 완성했습니다.</td>
+                            <td>수동 SSH 접속 과정을 완벽히 제거하여 <span class="highlight-text">취약점 점검 업무 효율성을 극대화</span>했으며, 전체 서버 소프트웨어 리스크에 대한 실시간 가시성을 확보했습니다.</td>
+                        </tr>
+                        <tr>
+                            <th>구성 및 흐름</th>
+                            <td>
+                                <button class="view-details-btn" onclick="openModal('bp6_architecture.jpg')">
+                                    🔍 상세보기
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW SLIDE ADDED: Best Practice 7 -->
+        <div class="slide">
+            <div class="lang-ja">
+                <h2>Best Practice 7: セキュリティエージェント自動配布システム(PMS)構築</h2>
+                <p>Cortex XDRの機能と自作のインストーラー配信環境を組み合わせ、セキュリティエージェントの全社展開を自動化しました。</p>
+                <div class="card">
+                    <table>
+                        <tr>
+                            <th>課題・背景</th>
+                            <td>既存のエージェント配布は他部署の協力に全面的に依存しており、完了までに5ヶ月(8月〜12月)を要していました。特にMac環境は配布ツール(PMS)が存在せず、従業員による手動インストールに頼るなど大きな非効率が生じていました。</td>
+                        </tr>
+                        <tr>
+                            <th>主な取り組み</th>
+                            <td>
+                                <ul>
+                                    <li>一般的なNginxサーバー上にインストーラーのアップロードページを構築し、専用の配布サーバーとして運用。</li>
+                                    <li>全社PCに導入済みのCortex XDRの「Python Script実行機能」を活用し、インストーラーをダウンロードしてSilentモードで実行するPythonスクリプトを作成・展開。</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>成果と意義</th>
+                            <td>他部署への配布作業の依存を100%排除し、セキュリティチーム単独で即時かつ統制された配布が可能になりました。Mac環境の自動配布も実現し、従来5ヶ月かかっていた作業を<span class="highlight-text">1ヶ月以内に完了(80%短縮)</span>させる圧倒的な業務効率化を達成しました。</td>
+                        </tr>
+                        <tr>
+                            <th>構成・フロー</th>
+                            <td>
+                                <button class="view-details-btn" onclick="openModal('bp7_architecture.jpg')">
+                                    🔍 詳細を見る
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="lang-ko">
+                <h2>Best Practice 7: 보안 에이전트 배포 자동화 환경(PMS) 자체 구축</h2>
+                <p>Cortex XDR의 스크립트 실행 기능과 자체 인스톨러 배포 서버를 결합하여 전사 엔드포인트에 대한 에이전트 배포를 전면 자동화했습니다.</p>
+                <div class="card">
+                    <table>
+                        <tr>
+                            <th>도입 배경</th>
+                            <td>기존 보안 에이전트 배포는 타 부서의 협조에 전적으로 의존해야 했으며, 전체 배포에 5개월(8~12월)이 소요되었습니다. 특히 Mac 환경은 PMS가 부재하여 임직원이 직접 설치해야 하는 심각한 비효율이 존재했습니다.</td>
+                        </tr>
+                        <tr>
+                            <th>주요 수행 내역</th>
+                            <td>
+                                <ul>
+                                    <li>일반 Nginx 웹 서버에 에이전트 인스톨러 업로드 페이지 및 배포 환경(PMS)을 자체 구축.</li>
+                                    <li>전사 PC에 기 설치된 Cortex XDR의 'Python Script 실행 기능'을 활용, 업로드된 인스톨러를 엔드포인트에서 다운로드 및 Silent 모드로 자동 설치하는 파이썬 스크립트를 작성하여 일괄 적용.</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>성과 및 의의</th>
+                            <td>타 부서 의존성을 100% 제거하고 보안팀 자체적으로 주도적인 배포 및 통제가 가능해졌습니다. Mac 환경의 자동 배포를 실현하였으며, 하루 30대씩만 진행하더라도 기존 5개월이 걸리던 배포를 <span class="highlight-text">1개월 이내로 80% 단축</span>하는 압도적인 업무 효율성을 달성했습니다.</td>
+                        </tr>
+                        <tr>
+                            <th>구성 및 흐름</th>
+                            <td>
+                                <button class="view-details-btn" onclick="openModal('bp7_architecture.jpg')">
+                                    🔍 상세보기
+                                </button>
+                            </td>
                         </tr>
                     </table>
                 </div>
@@ -987,7 +1119,8 @@
         const errorMsg = document.getElementById('errorMsg');
 
         function checkPassword() {
-            if (pwdInput.value === 'qwer1234!') {
+            // Password based on strict prompt instruction
+            if (pwdInput.value === 'password') {
                 loginOverlay.style.opacity = '0';
                 setTimeout(() => {
                     loginOverlay.style.display = 'none';
@@ -1004,6 +1137,27 @@
             if (e.key === 'Enter') checkPassword();
         });
 
+        // --- Modal (Flowchart Image Viewer) Logic ---
+        const modal = document.getElementById('image-modal');
+        const modalImg = document.getElementById('modal-img');
+        const closeBtn = document.querySelector('.close-modal');
+
+        function openModal(imageSrc) {
+            modal.classList.add('show');
+            modalImg.src = imageSrc;
+        }
+
+        closeBtn.onclick = function() {
+            modal.classList.remove('show');
+            setTimeout(() => { modalImg.src = ''; }, 300);
+        }
+
+        window.onclick = function(event) {
+            if (event.target === modal) {
+                modal.classList.remove('show');
+                setTimeout(() => { modalImg.src = ''; }, 300);
+            }
+        }
 
         // --- Career Duration Calculation ---
         function calculateCareerDuration() {
@@ -1088,8 +1242,8 @@
         prevBtn.addEventListener('click', prevSlide);
 
         document.addEventListener('keydown', (e) => {
-            // 패스워드 입력창에 포커스가 있을 때는 방향키로 슬라이드가 넘어가지 않도록 방어
-            if(document.activeElement === pwdInput) return;
+            // 방어 로직: 패스워드 창 포커스 또는 모달이 열려있을 때는 슬라이드 넘김 방지
+            if(document.activeElement === pwdInput || modal.classList.contains('show')) return;
 
             if (e.key === 'ArrowRight' || e.key === ' ') {
                 e.preventDefault();
@@ -1114,6 +1268,9 @@
         });
 
         function handleSwipe() {
+            // 모달이 열려있으면 스와이프 방지
+            if (modal.classList.contains('show')) return;
+            
             const threshold = 50;
             if (touchendX < touchstartX - threshold) nextSlide();
             if (touchendX > touchstartX + threshold) prevSlide();
