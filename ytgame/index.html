@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hacker Breach</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="terminal">
+        <header>
+            <div id="system-status"><span id="sys-status-label">SYSTEM STATUS:</span> <span id="status-text">SECURE</span></div>
+            <div id="timer-container"><span id="time-rem-label">TIME REMAINING:</span> <span id="timer">300</span>s</div>
+            <div id="stage-info"><span id="stage-label">STAGE:</span> <span id="stage-number">1</span>/10</div>
+            <select id="lang-select" style="background:transparent; color:var(--text-color); border:1px solid var(--border-color); font-family:var(--font-family); margin-left:10px;">
+                <option value="en">EN</option>
+                <option value="ko">KO</option>
+                <option value="ja">JA</option>
+            </select>
+        </header>
+
+        <main id="game-container">
+            <div id="start-screen" class="screen active">
+                <h1 id="start-title">HACKER BREACH</h1>
+                <p id="start-init">INITIALIZING INTRUSION SEQUENCE...</p>
+                <p id="start-obj">OBJECTIVE: BYPASS ALL 10 SECURITY LAYERS.</p>
+                <p id="start-time">TIME LIMIT: 300 SECONDS PER LAYER.</p>
+                <button id="start-btn" class="terminal-btn">[ INITIATE BREACH ]</button>
+            </div>
+
+            <div id="gameplay-screen" class="screen">
+                <div id="puzzle-header">
+                    <h2 id="puzzle-title">Connecting...</h2>
+                    <p id="puzzle-desc">Standby for security challenge.</p>
+                    <button id="hint-btn" class="terminal-btn" style="font-size:0.9rem; padding: 5px 10px; margin-top: 10px;">[ REQUEST HINT ]</button>
+                    <p id="hint-text" style="display:none; color: var(--warn-color); margin-top: 10px; font-size: 0.9rem; max-width: 80%;"></p>
+                </div>
+                <div id="puzzle-area">
+                    <!-- Puzzle content injected here via JS -->
+                </div>
+                <div id="feedback-area"></div>
+            </div>
+
+            <div id="game-over-screen" class="screen">
+                <h1 id="fail-title">BREACH FAILED</h1>
+                <p id="fail-desc">INTRUSION DETECTED. SYSTEM LOCKDOWN INITIATED.</p>
+                <button id="restart-btn" class="terminal-btn">[ RETRY CONNECTION ]</button>
+            </div>
+
+            <div id="victory-screen" class="screen">
+                <h1 id="win-title">SYSTEM COMPROMISED</h1>
+                <p id="win-desc1">FULL ROOT ACCESS GRANTED.</p>
+                <p id="win-desc2">ALL SECURITY LAYERS BYPASSED.</p>
+                <button id="play-again-btn" class="terminal-btn">[ NEW TARGET ]</button>
+            </div>
+        </main>
+        
+        <footer>
+            <div id="console-output">>_ root@attacker:~# ./breach.sh</div>
+        </footer>
+    </div>
+    <script src="audio.js"></script>
+    <script src="i18n.js"></script>
+    <script src="stages.js"></script>
+    <script src="stages2.js"></script>
+    <script src="stages3.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
