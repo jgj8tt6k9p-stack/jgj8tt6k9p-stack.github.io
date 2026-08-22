@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ITセキュリティゲーム</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard-jp@1.3.9/dist/web/static/pretendard-jp.min.css" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <!-- Start Screen -->
+        <div id="start-screen" class="screen">
+            <h1 data-i18n="title">ITセキュリティゲーム</h1>
+            <h2 data-i18n="subtitle">あなたはITセキュリティ担当者です。</h2>
+            
+            <div class="instructions">
+                <h3 data-i18n="ruleTitle">[ 業務ガイド ]</h3>
+                <ul>
+                    <li data-i18n="rule1">提示される<strong>法人名</strong>と<strong>チーム名</strong>を右側の「許可リスト」と照合してください。</li>
+                    <li data-i18n="rule2">すべて許可リストにあれば<strong>通過 (ALLOW)</strong></li>
+                    <li data-i18n="rule3">一つでも間違っていたり偽造があれば<strong>拒否 (DENY)</strong></li>
+                    <li data-i18n="rule4">計10名の出入りを審査する必要があります。</li>
+                </ul>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <button id="start-lang-toggle" style="background: #34495e; color: white; border-color: #34495e; padding: 10px 20px; font-size: 1rem;">
+                    🇰🇷 한국어로 변경
+                </button>
+            </div>
+
+            <button id="start-btn" data-i18n="startBtn">業務開始</button>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen hidden">
+            <!-- Background is now on game-screen itself -->
+            <div id="header">
+                <div>
+                    <button id="home-btn-game" data-i18n="homeBtn">🏠 처음으로</button>
+                    <span data-i18n="progress" style="margin-left: 10px;">심사 대기:</span> <span id="current-count">1</span> / 10
+                </div>
+                <div>
+                    <button id="lang-toggle">🇯🇵 日本語</button>
+                    <span data-i18n="score" style="margin-left:15px;">정확도:</span> <span id="score-count">0</span>
+                </div>
+            </div>
+
+            <div id="npc-area">
+                <div id="npc-sprite"></div>
+                <div id="speech-bubble">들어가겠습니다.</div>
+            </div>
+
+            <div id="desk">
+                <button id="btn-rulebook">📜 <span data-i18n="whitelistTitle">화이트리스트</span></button>
+                <div id="id-card" class="hidden">
+                    <div class="id-header">ID CARD</div>
+                    <div class="id-photo"></div>
+                    <div class="id-details">
+                        <div class="label">Company</div>
+                        <div id="id-company" class="value">TechCorp Global</div>
+                        <div class="label">Team</div>
+                        <div id="id-team" class="value">Security Team</div>
+                    </div>
+                    <div id="stamp-overlay" class="hidden"></div>
+                </div>
+            </div>
+
+            <div id="controls">
+                <button id="btn-allow" class="control-btn allow" disabled data-i18n="allowBtn">통과 (ALLOW)</button>
+                <button id="btn-deny" class="control-btn deny" disabled data-i18n="denyBtn">거부 (DENY)</button>
+            </div>
+
+            <!-- Rulebook Modal -->
+            <div id="rulebook-modal" class="hidden">
+                <button id="close-rulebook">X</button>
+                <h3>📜 <span data-i18n="whitelistTitle">화이트리스트</span></h3>
+                <div class="rule-section">
+                    <h4 data-i18n="allowCorp">[ 허용 법인 ]</h4>
+                    <ul id="rule-companies">
+                        <li>TechCorp Global</li>
+                        <li>TechCorp Games</li>
+                        <li>TechCorp Comics</li>
+                        <li>TechCorp Studio</li>
+                        <li>TechCorp Cloud</li>
+                        <li>TechCorp Security</li>
+                    </ul>
+                </div>
+                <div class="rule-section">
+                    <h4 data-i18n="allowTeam">[ 허용 팀 ]</h4>
+                    <ul id="rule-teams">
+                        <li>Security Team</li>
+                        <li>Game Development Team</li>
+                        <li>Platform Engineering Team</li>
+                        <li>Webtoon Contents Team</li>
+                        <li>Infrastructure Team</li>
+                        <li>HR & Admin Team</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- End Screen -->
+        <div id="end-screen" class="screen hidden">
+            <h2 data-i18n="endTitle">업무 종료</h2>
+            <div id="final-results">
+                <p data-i18n="endTotal">총 심사 인원: 10명</p>
+                <p><span data-i18n="endScore">정확도:</span> <span id="final-score">0</span> / 10</p>
+                <p id="evaluation-msg"></p>
+            </div>
+            <div class="educational-message">
+                <p><strong data-i18n="eduTitle">IT보안의 방화벽 접근 제어에 대해 잘 아셨나요?</strong></p>
+                <p data-i18n="eduDesc">저희 기술 보안 담당자는 방화벽을 통해 이처럼 인가된 사용자만 접근할 수 있도록 통제하여 회사의 자산을 안전하게 보호하는 일을 하고 있습니다.</p>
+            </div>
+            <button id="restart-btn" data-i18n="restartBtn">다시 하기</button>
+            <button id="home-btn-end" style="background:#bdc3c7; color:#2c3e50; border-color:#95a5a6; margin-top:10px;" data-i18n="homeBtn">🏠 처음으로</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
