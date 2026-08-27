@@ -446,20 +446,29 @@
 </div>
 
 <script>
-    // Web Audio API for 8-bit sound effects
-    let audioCtx;
+    // --- Sound Engine (Web Audio API) ---
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
     function initAudio() {
-        if (!audioCtx) {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        }
         if (audioCtx.state === 'suspended') {
             audioCtx.resume();
         }
     }
 
+    // 모바일 기기(특히 iOS)에서 오디오 컨텍스트를 강제로 깨우기 위한 전역 이벤트 리스너
+    const unlockAudio = () => {
+        initAudio();
+        // 한 번 깨우고 나면 리스너 제거
+        document.removeEventListener('touchstart', unlockAudio);
+        document.removeEventListener('click', unlockAudio);
+    };
+    document.addEventListener('touchstart', unlockAudio, { once: true });
+    document.addEventListener('click', unlockAudio, { once: true });
+
     function playSound(type) {
-        if (!audioCtx) return;
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
         const osc = audioCtx.createOscillator();
         const gainNode = audioCtx.createGain();
         osc.connect(gainNode);
