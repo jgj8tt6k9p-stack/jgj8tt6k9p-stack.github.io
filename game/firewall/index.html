@@ -29,13 +29,11 @@
             user-select: none;
         }
         
-        /* 모든 화면을 브라우저 크기에 상관없이 강제로 700x550으로 고정 */
+        /* 모바일 대응을 위해 고정 픽셀 대신 max-width 사용 */
         .window-box {
-            width: 700px;
-            min-width: 700px;
+            width: 95%;
             max-width: 700px;
-            height: 550px;
-            min-height: 550px;
+            height: 95vh;
             max-height: 550px;
             border: 4px solid var(--border-color);
             border-radius: 12px;
@@ -55,7 +53,7 @@
             background-color: var(--bg);
         }
         #start-screen h1 {
-            font-size: 50px;
+            font-size: 45px;
             color: var(--border-color);
             margin-bottom: 20px;
             margin-top: 0;
@@ -86,6 +84,7 @@
             font-family: inherit;
             transition: 0.2s;
             font-weight: bold;
+            z-index: 50;
         }
         #lang-toggle:hover {
             background: var(--border-color);
@@ -122,6 +121,7 @@
             background: #F1F8E9;
             display: flex;
             flex-direction: column;
+            overflow-y: auto;
         }
         .policy-title {
             font-size: 18px;
@@ -147,6 +147,7 @@
             padding: 20px;
             position: relative;
             background: #FAFAFA;
+            overflow-y: auto;
         }
         .packet {
             border: 4px solid var(--border-color);
@@ -190,6 +191,7 @@
             text-align: right;
             color: #E74C3C;
             font-weight: bold;
+            word-break: break-all;
         }
         .controls {
             display: flex;
@@ -230,6 +232,44 @@
         }
         .btn-allow:hover {
             background: #E8F5E9;
+        }
+        
+        /* 모바일 최적화 미디어 쿼리 */
+        @media (max-width: 600px) {
+            .window-box {
+                width: 100%;
+                height: 100vh;
+                max-height: none;
+                border: none;
+                border-radius: 0;
+            }
+            #game-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto 1fr;
+            }
+            .header {
+                flex-direction: column;
+                gap: 5px;
+                padding: 10px;
+                font-size: 16px;
+                grid-column: 1 / 2;
+            }
+            .policy-board {
+                border-right: none;
+                border-bottom: 4px solid var(--border-color);
+                padding: 10px;
+                max-height: 30vh;
+            }
+            .policy-title { margin-bottom: 5px; font-size: 16px; }
+            .main-area { padding: 10px; }
+            .packet { width: 95%; padding: 10px; margin-bottom: 15px; }
+            .pkt-row { grid-template-columns: 80px 10px 1fr; font-size: 14px; }
+            #start-screen h1 { font-size: 36px; }
+            #t-subtitle { font-size: 14px; }
+            .center-btn { padding: 12px 20px; font-size: 18px; }
+            .controls { gap: 10px; }
+            .btn { padding: 12px; font-size: 16px; }
+            .help-text { display: none; }
         }
         .feedback {
             position: absolute;
