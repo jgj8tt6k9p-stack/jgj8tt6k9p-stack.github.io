@@ -248,27 +248,52 @@
                 grid-template-rows: auto auto 1fr;
             }
             .header {
-                flex-direction: column;
-                gap: 5px;
-                padding: 10px;
-                font-size: 16px;
+                flex-direction: row;
+                justify-content: space-between;
+                padding: 10px 15px;
+                font-size: 14px;
                 grid-column: 1 / 2;
+                border-bottom: 2px solid var(--border-color);
             }
             .policy-board {
                 border-right: none;
                 border-bottom: 4px solid var(--border-color);
                 padding: 10px;
-                max-height: 30vh;
+                max-height: 35vh; /* 조금 더 넓게 확보 */
             }
-            .policy-title { margin-bottom: 5px; font-size: 16px; }
-            .main-area { padding: 10px; }
-            .packet { width: 95%; padding: 10px; margin-bottom: 15px; }
-            .pkt-row { grid-template-columns: 80px 10px 1fr; font-size: 14px; }
-            #start-screen h1 { font-size: 36px; }
-            #t-subtitle { font-size: 14px; }
-            .center-btn { padding: 12px 20px; font-size: 18px; }
-            .controls { gap: 10px; }
-            .btn { padding: 12px; font-size: 16px; }
+            .policy-title { 
+                margin-bottom: 5px; 
+                font-size: 14px; 
+                padding-bottom: 5px;
+            }
+            .policy-list {
+                font-size: 12px;
+                line-height: 1.4;
+            }
+            .main-area { 
+                padding: 10px; 
+                justify-content: flex-start;
+            }
+            .packet { 
+                width: 95%; 
+                padding: 10px; 
+                margin-top: 10px;
+                margin-bottom: 15px; 
+            }
+            .packet-header {
+                font-size: 14px;
+                margin-bottom: 10px;
+            }
+            .pkt-row { 
+                grid-template-columns: 80px 10px 1fr; 
+                font-size: 13px; 
+                gap: 5px;
+            }
+            #start-screen h1 { font-size: 32px; }
+            #t-subtitle { font-size: 13px; margin-bottom: 20px; }
+            .center-btn { padding: 12px 20px; font-size: 16px; }
+            .controls { gap: 10px; margin-bottom: 10px; }
+            .btn { padding: 12px; font-size: 15px; }
             .help-text { display: none; }
         }
         .feedback {
